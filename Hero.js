@@ -2,7 +2,7 @@ function Hero(x,y){
   this.x = x;
   this.y = y;
   this.speed = 5;
-  this.dir = 1;
+  this.dir = 0;
   this.stopped = true;
   this.movement = null;
   this.rail = null;
