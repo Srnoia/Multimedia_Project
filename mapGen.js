@@ -17,4 +17,9 @@ function drawMap(map){
       }
     })
   });
+  maze.forEach(function(e){
+    e.forEach(function(el){
+      el.constructor.name=="Rail"?el.initCollision():null;
+    })
+  });
 }

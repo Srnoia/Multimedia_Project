@@ -1,16 +1,14 @@
 function Mouse(x,y){
-  this.x = x|canvas.width/2;
-  this.y = y|canvas.height/2;
+  this.x = x;
+  this.y = y;
   this.speed = 5;
   this.dir = 0;
   this.movement = [];
   this.timer = 0;
-  this.collisionArray = [];
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
-Mouse.prototype = Object.create(Entity.prototype);
 Mouse.prototype.draw = function(){
   ctx.drawImage(spriteSheet, this.dir*spriteWidth, 0, spriteWidth, spriteHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
@@ -30,7 +28,6 @@ Mouse.prototype.move = function(){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Mouse.prototype.collision = function(){
-  this.initCollisions();
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
     entities.splice(entities.indexOf(this),1);
     score++;

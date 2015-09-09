@@ -1,16 +1,14 @@
 function Dog(x,y){
-  this.x = x|canvas.width/2;
-  this.y = y|canvas.height/2;
+  this.x = x;
+  this.y = y;
   this.speed = 3;
   this.dir = 0;
   this.movement = [];
   this.timer = 0;
-  this.collisionArray = [];
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
-Dog.prototype = Object.create(Entity.prototype);
 Dog.prototype.draw = function(){
   ctx.drawImage(spriteSheet, this.dir*spriteWidth, spriteHeight, spriteWidth, spriteHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
@@ -30,7 +28,6 @@ Dog.prototype.move = function(){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Dog.prototype.collision = function(){
-  this.initCollisions();
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
     clearInterval(interval);
     setTimeout(function(){ctx.fillStyle = "#FF0000";

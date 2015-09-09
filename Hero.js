@@ -1,15 +1,14 @@
 function Hero(x,y){
-  this.x = x|5;
-  this.y = y|5;
+  this.x = x;
+  this.y = y;
   this.speed = 5;
   this.dir = 0;
   this.movement = [];
-  this.collisionArray = [];
+  this.rail = null;
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
-Hero.prototype = Object.create(Entity.prototype);
 Hero.prototype.draw = function(){
   ctx.drawImage(spriteSheet, this.dir*spriteWidth, 2*spriteHeight, spriteWidth, spriteHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
@@ -31,5 +30,5 @@ Hero.prototype.move = function(){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Hero.prototype.collision = function(){
-  this.initCollisions();
+  return false;
 }
