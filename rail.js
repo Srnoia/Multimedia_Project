@@ -1,6 +1,6 @@
 function Rail(x,y,type){
-  this.x = x|0;
-  this.y = y|0;
+  this.x = x;
+  this.y = y;
   this.collisionArray = [];
   this.tileIndexX = ~~(this.x/spriteWidth);
   this.tileIndexY = ~~(this.y/spriteHeight);
@@ -61,7 +61,7 @@ Rail.prototype.collision = function(entity){
         entity.dir==2&&this.collisionArray[2]&&this.collisionArray[2].collision()||
         entity.dir==3&&this.collisionArray[1]&&this.collisionArray[1].collision()||
         entity.dir==4&&this.collisionArray[0]&&this.collisionArray[0].collision()){
-          entity.stopped=true;
+          entity.stopped = true;
           entity.x = this.x;
           entity.y = this.y;
         }

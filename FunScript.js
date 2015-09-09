@@ -42,6 +42,7 @@ function game(){
   ctx.fill();
   entities.forEach(function(e){
     e.move();
+    e.draw();
     e.collision();
     maze.forEach(function(el){
       el.forEach(function(elem){
@@ -49,7 +50,6 @@ function game(){
         elem.collision(e);
       })
     })
-    e.draw();
   });
 }
 function getFile(file){
