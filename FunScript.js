@@ -16,6 +16,7 @@ var body,
     xmlhttp = new XMLHttpRequest(),
     listeners = [readFile],
     mapData,
+    spawnable = [],
     interval;
     spriteSheet.src = "resources/spriteSheet.png";
     backGround.src = "resources/background.png";

@@ -36,7 +36,7 @@ Mouse.prototype.collision = function(){
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
     entities.splice(entities.indexOf(this),1);
     score++;
-    entities.push(new Mouse(~~(Math.random()*canvas.width),~~(Math.random()*canvas.height)));
-    entities.push(new Dog(~~(Math.random()*canvas.width),~~(Math.random()*canvas.height)));
+    //entities.push(new Mouse(~~(Math.random()*canvas.width),~~(Math.random()*canvas.height)));
+    //entities.push(new Dog(~~(Math.random()*canvas.width),~~(Math.random()*canvas.height)));
   }
 }

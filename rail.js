@@ -13,10 +13,11 @@ Rail.prototype.draw = function(){
   return false;
 }
 Rail.prototype.initCollision = function(){
-  this.collisionArray[0] = maze[this.tileIndexX][this.tileIndexY-1]?maze[this.tileIndexX][this.tileIndexY-1]:null; //UP
-  this.collisionArray[1] = maze[this.tileIndexX][this.tileIndexY+1]?maze[this.tileIndexX][this.tileIndexY+1]:null; //DOWN
-  this.collisionArray[2] = maze[this.tileIndexX+1][this.tileIndexY]?maze[this.tileIndexX+1][this.tileIndexY]:null; //RIGHT
-  this.collisionArray[3] = maze[this.tileIndexX-1][this.tileIndexY]?maze[this.tileIndexX-1][this.tileIndexY]:null; //LEFT
+  spawnable.push([this.x,this.y]);
+  this.collisionArray[0] = maze[this.tileIndexX][this.tileIndexY-1]?maze[this.tileIndexX][this.tileIndexY-1]:maze[this.tileIndexX][maze[this.tileIndexX].length-1]; //UP
+  this.collisionArray[1] = maze[this.tileIndexX][this.tileIndexY+1]?maze[this.tileIndexX][this.tileIndexY+1]:maze[this.tileIndexX][0]; //DOWN
+  this.collisionArray[2] = maze[this.tileIndexX+1]?maze[this.tileIndexX+1][this.tileIndexY]:maze[0][this.tileIndexY]; //RIGHT
+  this.collisionArray[3] = maze[this.tileIndexX-1]?maze[this.tileIndexX-1][this.tileIndexY]:maze[maze.length-1][this.tileIndexY]; //LEFT
 }
 Rail.prototype.collision = function(entity){
   if(entity){
