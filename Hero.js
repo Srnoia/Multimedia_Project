@@ -19,11 +19,7 @@ Hero.prototype.move = function(){
     this.dir==2?this.x+=this.speed:null;
     this.dir==3?this.y+=this.speed:null;
     this.dir==4?this.y-=this.speed:null;
-  }
-  /*moveObj.up?(function(){this.y-=this.speed;this.dir=4;}).call(this,null):null;
-  moveObj.left?(function(){this.x-=this.speed;this.dir=1;}).call(this,null):null;
-  moveObj.right?(function(){this.x+=this.speed;this.dir=2;}).call(this,null):null;
-  moveObj.down?(function(){this.y+=this.speed;this.dir=3;}).call(this,null):null;*/   
+  }   
   this.x<0-spriteWidth?this.x=canvas.width:null;
   this.x>canvas.width?this.x=0:null;
   this.y>canvas.height?this.y=0:null;

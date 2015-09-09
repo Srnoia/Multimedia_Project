@@ -59,9 +59,10 @@ Rail.prototype.collision = function(entity){
             break;
         }
         if(entity.dir==1&&this.collisionArray[3]&&this.collisionArray[3].collision()||
-        entity.dir==2&&this.collisionArray[2]&&this.collisionArray[2].collision()||
-        entity.dir==3&&this.collisionArray[1]&&this.collisionArray[1].collision()||
-        entity.dir==4&&this.collisionArray[0]&&this.collisionArray[0].collision()){
+           entity.dir==2&&this.collisionArray[2]&&this.collisionArray[2].collision()||
+           entity.dir==3&&this.collisionArray[1]&&this.collisionArray[1].collision()||
+           entity.dir==4&&this.collisionArray[0]&&this.collisionArray[0].collision())
+        {  
           entity.stopped = true;
           entity.x = this.x;
           entity.y = this.y;
