@@ -29,7 +29,6 @@ function begin(){
   canvas.width = 640;
   canvas.height = 480;  
   document.addEventListener("keydown",keyDownEv,true);
-  document.addEventListener("keyup",keyUpEv,true);
   interval = setInterval(game,1000/60);
 }
 function game(){
