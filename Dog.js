@@ -8,6 +8,7 @@ function Dog(x,y){
   this.movementObj = {0:null,1:"left",2:"right",3:"up",4:"down",5:null};
   this.rail = null;
   this.timer = 0;
+  this.collisionArray = [];
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
@@ -33,12 +34,31 @@ Dog.prototype.move = function(){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Dog.prototype.collision = function(){
+  this.tileIndexX = ~~(this.x/spriteWidth);
+  this.tileIndexY = ~~(this.y/spriteHeight);
+  this.tileIndexX<0?this.tileIndexX=canvas.width/spriteWidth-1:null;
+  this.tileIndexX>canvas.width/spriteWidth-1?this.tileIndexX=0:null;
+  this.tileIndexY<0?this.tileIndexY=canvas.height/spriteHeight-1:null;
+  this.tileIndexY>canvas.height/spriteHeight-1?this.tileIndexY=0:null;
+  this.collisionArray[0] = maze[this.tileIndexX]&&maze[this.tileIndexX][this.tileIndexY]?maze[this.tileIndexX][this.tileIndexY]:null;
+  this.collisionArray[1] = maze[this.tileIndexX][this.tileIndexY+1]?maze[this.tileIndexX][this.tileIndexY+1]:maze[this.tileIndexX][0]; //DOWN
+  this.collisionArray[2] = maze[this.tileIndexX+1]?maze[this.tileIndexX+1][this.tileIndexY]:maze[0][this.tileIndexY]; //RIGHT
+  this.collisionArray[3] = maze[this.tileIndexX-1]?maze[this.tileIndexX-1][this.tileIndexY]:maze[maze.length-1][this.tileIndexY]; //LEFT  
+  this.collisionArray[4] = maze[this.tileIndexX][this.tileIndexY-1]?maze[this.tileIndexX][this.tileIndexY-1]:maze[this.tileIndexX][maze[this.tileIndexX].length-1]; //UP
+  for(var i=0;i<this.collisionArray.length-1;i++){
+    this.collisionArray[i]?this.collisionArray[i].collision(this):null;
+  }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
-    clearInterval(interval);
+    /*clearInterval(interval);
     setTimeout(function(){ctx.fillStyle = "#FF0000";
     ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle = "#0000FF";
     ctx.fillText("YOU LOST, YOUR SCORE WAS "+score,50,200);
     ctx.fill();},1);
+    if(debug){
+      worker.postMessage("end");
+      worker.terminate();
+      //interval = setInterval(replay,1000/60);
+    }*/
   }
 }

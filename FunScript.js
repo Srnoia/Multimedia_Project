@@ -17,7 +17,13 @@ var body,
     listeners = [readFile],
     mapData,
     spawnable = [],
-    interval;
+    screenCapture = [],
+    debug = false,
+    interval,
+    worker,
+    response,
+    curImage = 0;
+    img = new Image();
     spriteSheet.src = "resources/spriteSheet.png";
     backGround.src = "resources/background.png";
 
@@ -28,6 +34,7 @@ function begin(){
   drawMap(mapData);
   canvas.width = 640;
   canvas.height = 480;  
+  spawnWorker();
   document.addEventListener("keydown",keyDownEv,true);
   interval = setInterval(game,1000/60);
 }
@@ -44,13 +51,26 @@ function game(){
     e.move();
     e.draw();
     e.collision();
-    maze.forEach(function(el){
-      el.forEach(function(elem){
-        elem.draw();
-        elem.collision(e);
-      })
-    })
   });
+  maze.forEach(function(el){
+    el.forEach(function(elem){
+      elem.draw();
+    })
+  })
+  if(debug){
+    worker.postMessage(canvas).toDataURL("png");
+  }
+}
+function replay(){
+  if(curImage<screenCapture.length){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    img.src = screenCapture[curImage];
+    ctx.drawImage(img,0,0);
+    curImage++;
+  }  
+  else{
+    clearInterval(interval);
+  }
 }
 function getFile(file){
   listeners.forEach(function(e){xmlhttp.removeEventListener("readystatechange",e)});

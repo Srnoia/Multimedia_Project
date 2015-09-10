@@ -7,6 +7,7 @@ function Mouse(x,y){
   this.movement = null;
   this.movementObj = {0:null,1:"left",2:"right",3:"up",4:"down",5:null};
   this.rail = null;
+  this.collisionArray = [];
   this.timer = 0;
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
@@ -33,8 +34,24 @@ Mouse.prototype.move = function(){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Mouse.prototype.collision = function(){
+  this.tileIndexX = ~~(this.x/spriteWidth);
+  this.tileIndexY = ~~(this.y/spriteHeight);
+  this.tileIndexX<0?this.tileIndexX=canvas.width/spriteWidth-1:null;
+  this.tileIndexX>canvas.width/spriteWidth-1?this.tileIndexX=0:null;
+  this.tileIndexY<0?this.tileIndexY=canvas.height/spriteHeight-1:null;
+  this.tileIndexY>canvas.height/spriteHeight-1?this.tileIndexY=0:null;
+  this.collisionArray[0] = maze[this.tileIndexX]&&maze[this.tileIndexX][this.tileIndexY]?maze[this.tileIndexX][this.tileIndexY]:null;
+  this.collisionArray[1] = maze[this.tileIndexX][this.tileIndexY+1]?maze[this.tileIndexX][this.tileIndexY+1]:maze[this.tileIndexX][0]; //DOWN
+  this.collisionArray[2] = maze[this.tileIndexX+1]?maze[this.tileIndexX+1][this.tileIndexY]:maze[0][this.tileIndexY]; //RIGHT
+  this.collisionArray[3] = maze[this.tileIndexX-1]?maze[this.tileIndexX-1][this.tileIndexY]:maze[maze.length-1][this.tileIndexY]; //LEFT  
+  this.collisionArray[4] = maze[this.tileIndexX][this.tileIndexY-1]?maze[this.tileIndexX][this.tileIndexY-1]:maze[this.tileIndexX][maze[this.tileIndexX].length-1]; //UP
+  for(var i=0;i<this.collisionArray.length-1;i++){
+    this.collisionArray[i]?this.collisionArray[i].collision(this):null;
+  }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
     entities.splice(entities.indexOf(this),1);
+    spawner(Mouse);
+    ~~(Math.random()*2)?spawner(Dog):null;
     score++;
     //entities.push(new Mouse(~~(Math.random()*canvas.width),~~(Math.random()*canvas.height)));
     //entities.push(new Dog(~~(Math.random()*canvas.width),~~(Math.random()*canvas.height)));

@@ -9,3 +9,12 @@ function spawner(entity){
   }
   entities.push(new entity(spawnable[random][0],spawnable[random][1]));
 }
+function spawnWorker(){
+  if(typeof Worker!="undefined"){
+    worker = new Worker("worker.js");
+    worker.addEventListener("message",function(e){
+      response = e.data;
+      console.log(response);
+    });  
+  }
+}
