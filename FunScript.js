@@ -10,6 +10,9 @@ var body,
     spriteHeight = 40,
     spriteWidth = 40,
     hero,
+    timerClock = 0,
+    timer,
+    fps = "60",
     xmlhttp = new XMLHttpRequest(),
     listeners = [readFile],
     mapData,
@@ -24,14 +27,15 @@ function begin(){
   drawMap(mapData);
   canvas.width = 640;
   canvas.height = 480;  
-  document.addEventListener("keydown",keyDownEv);
-  document.addEventListener("keyup",keyUpEv);
+  document.addEventListener("keydown",keyDownEv,true);
+  document.addEventListener("keyup",keyUpEv,true);
   interval = setInterval(game,1000/60);
 }
 function game(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle = "#1122FF";
   //ctx.drawImage(backGround, 0, 0, canvas.width, canvas.height);
+  getFPS();
   ctx.font = "30px Verdana";
   ctx.fillStyle = "#000000";
   ctx.fillText("SCORE: "+score,5,35);
@@ -56,4 +60,20 @@ function getFile(file){
 }
 function readFile(){
   mapData = xmlhttp.readyState==4?xmlhttp.responseText:null;
+}
+function getFPS(){
+  if(timerClock==0){     // this calculates the current fps the game is running at
+    timer = new Date();
+    timer = timer.getTime();
+  }
+  timerClock++;  
+  if(timerClock==60){
+    var elapsed = new Date();
+    elapsed = elapsed.getTime()-timer;
+    fps = String(~~(60/(elapsed/1000)));
+    timerClock=0;
+  }
+  ctx.fillStyle = "#000000";
+  ctx.font = "30px Verdana";
+  ctx.fillText(fps,400,70);
 }
