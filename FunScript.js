@@ -38,6 +38,7 @@ function begin(){
   canvas.height = 480/scale;
   ctx.scale(scale,scale);
   spawnWorker();
+  document.addEventListener("error",function(){console.trace();clearInterval(interval)});
   document.addEventListener("keydown",keyDownEv,true);
   interval = setInterval(game,1000/60);
 }
@@ -62,20 +63,8 @@ function game(){
   })  
   hero.draw();
   if(debug){
-    worker.postMessage(ctx.getImageData(0,0,canvas.width,canvas.height));
+    worker.postMessage(entities);
   }
-}
-function replay(){
-  clearInterval(interval);
-  interval = setInterval(function(){
-    if(curImage<response.length-1){
-      ctx.putImageData(response[curImage],0,0);
-      curImage++;
-    }  
-    else{
-      clearInterval(interval);
-    }
-  },1000/60);
 }
 function getFile(file){
   listeners.forEach(function(e){xmlhttp.removeEventListener("readystatechange",e)});

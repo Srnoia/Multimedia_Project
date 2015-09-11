@@ -1,8 +1,9 @@
-function Dog(x,y){
+function Dog(x,y,dir){
+  this.type = "dog";
   this.x = x;
   this.y = y;
   this.speed = 3;
-  this.dir = 0;
+  this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;
   this.movementObj = {0:null,1:"left",2:"right",3:"up",4:"down",5:null};
@@ -49,7 +50,7 @@ Dog.prototype.collision = function(){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
-    clearInterval(interval);
+    /*clearInterval(interval);
     setTimeout(function(){ctx.fillStyle = "#FF0000";
     ctx.font = "72px Verdana";
     ctx.fillRect(0,0,canvas.width+spriteWidth,canvas.height+spriteHeight);
@@ -58,9 +59,9 @@ Dog.prototype.collision = function(){
     ctx.fillText("to play again, press Enter",80,600)
     ctx.fill();},1);
     if(debug){
-      worker.postMessage("end");
-      worker.terminate();
-      replay();
-    }
+      //worker.postMessage("end");
+      //worker.terminate();
+      //replay();
+    }    */
   }
 }

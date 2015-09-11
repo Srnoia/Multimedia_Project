@@ -1,8 +1,9 @@
-function Mouse(x,y){
+function Mouse(x,y,dir){
+  this.type = "mouse";
   this.x = x;
   this.y = y;
   this.speed = 5;
-  this.dir = 0;
+  this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;
   this.movementObj = {0:null,1:"left",2:"right",3:"up",4:"down",5:null};

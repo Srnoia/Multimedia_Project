@@ -9,6 +9,30 @@ function spawner(entity){
   }
   entities.push(new entity(spawnable[random][0],spawnable[random][1]));
 }
+function replay(){
+  clearInterval(interval);
+  interval = setInterval(function(){
+    if(curImage<response.length-1){
+      ctx.clearRect(0,0,canvas.width+spriteWidth,canvas.height+spriteHeight);
+      response[curImage].forEach(function(e){
+        switch(e.type){
+          case "hero":ctx.drawImage(spriteSheet, e.dir*spriteWidth, 2*spriteHeight, spriteWidth, spriteHeight, e.x, e.y, spriteWidth, spriteHeight);break;
+          case "dog":ctx.drawImage(spriteSheet, e.dir*spriteWidth, spriteHeight, spriteWidth, spriteHeight, e.x, e.y, spriteWidth, spriteHeight);break;
+          case "mouse":ctx.drawImage(spriteSheet, e.dir*spriteWidth, 0, spriteWidth, spriteHeight, e.x, e.y, spriteWidth, spriteHeight);break;
+        }
+      });
+      maze.forEach(function(el){
+        el.forEach(function(elem){
+          elem.draw();
+        })
+      }); 
+      curImage++;
+    } 
+    else{
+      clearInterval(interval);
+    }
+  },1000/60);
+}
 function restart(){
   clearInterval(interval);
   spawnable = [];
