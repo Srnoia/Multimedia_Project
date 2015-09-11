@@ -36,14 +36,13 @@ function begin(){
   scale = 0.5;
   canvas.width = 640/scale;
   canvas.height = 480/scale;
-  ctx.mitirLimit = 1;
   ctx.scale(scale,scale);
   spawnWorker();
   document.addEventListener("keydown",keyDownEv,true);
   interval = setInterval(game,1000/60);
 }
 function game(){
-  ctx.clearRect(0-spriteWidth,0-spriteWidth,canvas.width+(2*spriteWidth),canvas.height+(2*spriteHeight));
+  ctx.clearRect(0,0,canvas.width+spriteWidth,canvas.height+spriteHeight);
   ctx.fillStyle = "#1122FF";
   //ctx.drawImage(backGround, 0, 0, canvas.width, canvas.height);
   getFPS();

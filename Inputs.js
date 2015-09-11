@@ -23,6 +23,9 @@ function keyDownEv(e){
       e.preventDefault();
       hero.movement="right";
       hero.dir==1?(hero.dir=2,hero.stopped=false):null;
-      break;                                                                                                                                                 
+      break; 
+    case 13:
+      restart();
+      break;                                                                                                                                                
   }  
 }

@@ -9,6 +9,16 @@ function spawner(entity){
   }
   entities.push(new entity(spawnable[random][0],spawnable[random][1]));
 }
+function restart(){
+  clearInterval(interval);
+  spawnable = [];
+  entities = [];
+  hero = null;
+  maze = Array.apply(null,Array(32)).map(e=>[]),
+  score = 0;
+  drawMap(mapData);
+  interval = setInterval(game,1000/60);
+}
 function spawnWorker(){
   if(typeof Worker!="undefined"){
     worker = new Worker("worker.js");

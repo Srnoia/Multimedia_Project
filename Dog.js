@@ -49,16 +49,18 @@ Dog.prototype.collision = function(){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
-    /*clearInterval(interval);
+    clearInterval(interval);
     setTimeout(function(){ctx.fillStyle = "#FF0000";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.font = "72px Verdana";
+    ctx.fillRect(0,0,canvas.width+spriteWidth,canvas.height+spriteHeight);
     ctx.fillStyle = "#0000FF";
-    ctx.fillText("YOU LOST, YOUR SCORE WAS "+score,50,200);
+    ctx.fillText("YOU LOST, YOUR SCORE WAS "+score,100,400);
+    ctx.fillText("to play again, press Enter",80,600)
     ctx.fill();},1);
     if(debug){
       worker.postMessage("end");
       worker.terminate();
-      //interval = setInterval(replay,1000/60);
-    }*/
+      replay();
+    }
   }
 }

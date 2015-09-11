@@ -1,5 +1,5 @@
 function drawMap(map){
-  map = map.replace(/\r/g,"").split('\n'); // FOR SOME REASON text HAD AN ODD \r
+  var map = map.replace(/\r/g,"").split('\n'); // FOR SOME REASON text HAD AN ODD \r
   map.forEach(function(e,y){
     e.split('').forEach(function(el,x){
       switch(el){
