@@ -30,6 +30,7 @@ function replay(){
     } 
     else{
       clearInterval(interval);
+      timeout = setTimeout(gameEnd,3000);
     }
   },1000/60);
 }
@@ -48,7 +49,7 @@ function spawnWorker(){
     worker = new Worker("worker.js");
     worker.addEventListener("message",function(e){
       response = e.data;
-      //console.log(response);
+      replay();
     });  
   }
 }

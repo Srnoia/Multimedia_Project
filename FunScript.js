@@ -23,7 +23,8 @@ var body,
     worker,
     response,
     scale,
-    curImage = 0;
+    curImage = 0,
+    timeout,
     img = new Image();
     spriteSheet.src = "resources/spriteSheet.png";
     backGround.src = "resources/background.png";
@@ -62,9 +63,18 @@ function game(){
     })
   })  
   hero.draw();
-  if(debug){
-    worker.postMessage(entities);
-  }
+  worker.postMessage(entities);
+}
+function gameEnd(){
+  clearInterval(interval);
+  setTimeout(function(){ctx.fillStyle = "#FF0000";
+  ctx.font = "72px Verdana";
+  ctx.fillRect(0,0,canvas.width+spriteWidth,canvas.height+spriteHeight);
+  ctx.fillStyle = "#0000FF";
+  ctx.fillText("YOU LOST, YOUR SCORE WAS "+score,100,400);
+  ctx.fillText("to play again, press Enter",80,600);
+  ctx.fillText("to view replay, press Space",80,800);
+  ctx.fill();},1); 
 }
 function getFile(file){
   listeners.forEach(function(e){xmlhttp.removeEventListener("readystatechange",e)});
