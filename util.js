@@ -14,7 +14,7 @@ function spawnWorker(){
     worker = new Worker("worker.js");
     worker.addEventListener("message",function(e){
       response = e.data;
-      console.log(response);
+      //console.log(response);
     });  
   }
 }

@@ -3,7 +3,7 @@ var body,
     ctx = canvas.getContext("2d"),
     moveObj = {},
     entities = [],
-    maze = Array.apply(null,Array(16)).map(e=>[]),
+    maze = Array.apply(null,Array(32)).map(e=>[]),
     score = 0,
     spriteSheet = new Image(),
     backGround = new Image(),
@@ -22,6 +22,7 @@ var body,
     interval,
     worker,
     response,
+    scale,
     curImage = 0;
     img = new Image();
     spriteSheet.src = "resources/spriteSheet.png";
@@ -32,14 +33,17 @@ function begin(){
   body.appendChild(canvas);
   getFile("resources/levels.txt");
   drawMap(mapData);
-  canvas.width = 640;
-  canvas.height = 480;  
+  scale = 0.5;
+  canvas.width = 640/scale;
+  canvas.height = 480/scale;
+  ctx.mitirLimit = 1;
+  ctx.scale(scale,scale);
   spawnWorker();
   document.addEventListener("keydown",keyDownEv,true);
   interval = setInterval(game,1000/60);
 }
 function game(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0-spriteWidth,0-spriteWidth,canvas.width+(2*spriteWidth),canvas.height+(2*spriteHeight));
   ctx.fillStyle = "#1122FF";
   //ctx.drawImage(backGround, 0, 0, canvas.width, canvas.height);
   getFPS();
@@ -56,21 +60,23 @@ function game(){
     el.forEach(function(elem){
       elem.draw();
     })
-  })
+  })  
+  hero.draw();
   if(debug){
-    worker.postMessage(canvas).toDataURL("png");
+    worker.postMessage(ctx.getImageData(0,0,canvas.width,canvas.height));
   }
 }
 function replay(){
-  if(curImage<screenCapture.length){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    img.src = screenCapture[curImage];
-    ctx.drawImage(img,0,0);
-    curImage++;
-  }  
-  else{
-    clearInterval(interval);
-  }
+  clearInterval(interval);
+  interval = setInterval(function(){
+    if(curImage<response.length-1){
+      ctx.putImageData(response[curImage],0,0);
+      curImage++;
+    }  
+    else{
+      clearInterval(interval);
+    }
+  },1000/60);
 }
 function getFile(file){
   listeners.forEach(function(e){xmlhttp.removeEventListener("readystatechange",e)});
