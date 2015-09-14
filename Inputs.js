@@ -32,6 +32,7 @@ function keyDownEv(e){
       break;
     case 32: // Space
       e.preventDefault();
+      clearTimeout(timeout);
       curImage = 0;
       worker.postMessage("end");
       break;                                                                                                                                                
