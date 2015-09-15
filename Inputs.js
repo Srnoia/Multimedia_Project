@@ -26,6 +26,8 @@ function keyDownEv(e){
       break; 
     case 13: // Enter
       e.preventDefault();
+      ctx.translate(-translate,0);
+      translate = 0;
       clearTimeout(timeout);
       worker.postMessage("clear");
       restart();

@@ -25,6 +25,10 @@ var body,
     scale,
     curImage = 0,
     timeout,
+    scrollSpeed = -0.5,
+    translate = 0,
+    mazeBuffer = [],
+    transWidth,
     img = new Image();
     spriteSheet.src = "resources/spriteSheet.png";
     backGround.src = "resources/background.png";
@@ -34,6 +38,8 @@ function begin(){
   body.appendChild(canvas);
   getFile("resources/levels.txt");
   drawMap(mapData);
+  mazeBuffer[0] = generateMap();
+  mazeBuffer[1] = generateMap();
   scale = 0.5;
   canvas.width = 640/scale;
   canvas.height = 480/scale;
@@ -44,9 +50,12 @@ function begin(){
   interval = setInterval(game,1000/60);
 }
 function game(){
-  ctx.clearRect(0,0,canvas.width+spriteWidth,canvas.height+spriteHeight);
+  //translate+=scrollSpeed;
+  //ctx.translate(scrollSpeed,0);
+  transWidth = canvas.width-translate;
+  ctx.clearRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
   ctx.fillStyle = "#1122FF";
-  //ctx.drawImage(backGround, 0, 0, canvas.width, canvas.height);
+  //ctx.drawImage(backGround, 0, 0, transWidth, canvas.height);
   getFPS();
   ctx.font = "30px Verdana";
   ctx.fillStyle = "#000000";
@@ -66,10 +75,12 @@ function game(){
   worker.postMessage(entities);
 }
 function gameEnd(){
+  ctx.translate(-translate,0);
+  translate = 0;
   clearInterval(interval);
   setTimeout(function(){ctx.fillStyle = "#FF0000";
   ctx.font = "72px Verdana";
-  ctx.fillRect(0,0,canvas.width+spriteWidth,canvas.height+spriteHeight);
+  ctx.fillRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
   ctx.fillStyle = "#0000FF";
   ctx.fillText("YOU LOST, YOUR SCORE WAS "+score,100,400);
   ctx.fillText("to play again, press Enter",80,600);

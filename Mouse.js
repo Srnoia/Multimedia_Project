@@ -26,8 +26,8 @@ Mouse.prototype.move = function(){
     this.dir==3?this.y+=this.speed:null;
     this.dir==4?this.y-=this.speed:null;
   }
-  this.x<0-spriteWidth?this.x=canvas.width:null;
-  this.x>canvas.width?this.x=0:null;
+  this.x<0-spriteWidth?this.x=transWidth:null;
+  this.x>transWidth?this.x=0:null;
   this.y>canvas.height?this.y=0:null;
   this.y<0-spriteHeight?this.y=canvas.height:null;
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
@@ -37,8 +37,8 @@ Mouse.prototype.move = function(){
 Mouse.prototype.collision = function(){
   this.tileIndexX = ~~(this.x/spriteWidth);
   this.tileIndexY = ~~(this.y/spriteHeight);
-  this.tileIndexX<0?this.tileIndexX=canvas.width/spriteWidth-1:null;
-  this.tileIndexX>canvas.width/spriteWidth-1?this.tileIndexX=0:null;
+  this.tileIndexX<0?this.tileIndexX=transWidth/spriteWidth-1:null;
+  this.tileIndexX>transWidth/spriteWidth-1?this.tileIndexX=0:null;
   this.tileIndexY<0?this.tileIndexY=canvas.height/spriteHeight-1:null;
   this.tileIndexY>canvas.height/spriteHeight-1?this.tileIndexY=0:null;
   this.collisionArray[0] = maze[this.tileIndexX]&&maze[this.tileIndexX][this.tileIndexY]?maze[this.tileIndexX][this.tileIndexY]:null;
@@ -54,7 +54,7 @@ Mouse.prototype.collision = function(){
     spawner(Mouse);
     ~~(Math.random()*2)?spawner(Dog):null;
     score++;
-    //entities.push(new Mouse(~~(Math.random()*canvas.width),~~(Math.random()*canvas.height)));
-    //entities.push(new Dog(~~(Math.random()*canvas.width),~~(Math.random()*canvas.height)));
+    //entities.push(new Mouse(~~(Math.random()*transWidth),~~(Math.random()*canvas.height)));
+    //entities.push(new Dog(~~(Math.random()*transWidth),~~(Math.random()*canvas.height)));
   }
 }

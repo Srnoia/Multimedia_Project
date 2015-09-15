@@ -13,7 +13,7 @@ function replay(){
   clearInterval(interval);
   interval = setInterval(function(){
     if(curImage<response.length-1){
-      ctx.clearRect(0,0,canvas.width+spriteWidth,canvas.height+spriteHeight);
+      ctx.clearRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
       response[curImage].forEach(function(e){
         switch(e.type){
           case "hero":ctx.drawImage(spriteSheet, e.dir*spriteWidth, 2*spriteHeight, spriteWidth, spriteHeight, e.x, e.y, spriteWidth, spriteHeight);break;
