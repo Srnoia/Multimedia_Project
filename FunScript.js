@@ -1,6 +1,7 @@
 var body,
     canvas = document.createElement("canvas"),
     ctx = canvas.getContext("2d"),
+    style = document.createElement("style"),
     moveObj = {},
     entities = [],
     maze = Array.apply(null,Array(32)).map(e=>[]),
@@ -32,11 +33,14 @@ var body,
     mapPointers = [],
     transWidth,
     img = new Image();
+    style.type = "text/css";
+    style.innerHTML = "@font-face{font-family: Shojumaru-Regular;src: url(resources/Shojumaru-Regular.ttf);}";
     endScreen.src = "resources/end.jpg";
     spriteSheet.src = "resources/spriteSheet.png";
     backGround.src = "resources/background.jpg";
 
 function begin(){
+  document.querySelector("head").appendChild(style);
   body = document.querySelector("body");
   body.appendChild(canvas);
   getFile("resources/levels.txt");
@@ -88,7 +92,7 @@ function gameEnd(){
   setTimeout(function(){
     ctx.clearRect(0,0,canvas.width/scale,canvas.height/scale)
     ctx.drawImage(endScreen,0,0,canvas.width,canvas.height);
-    ctx.font = "72px Verdana";
+    ctx.font = "72px Shojumaru-Regular";
     ctx.fillText(score,350,350);
   },1); 
 }
