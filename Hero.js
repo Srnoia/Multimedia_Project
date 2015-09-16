@@ -23,7 +23,7 @@ Hero.prototype.move = function(){
     this.dir==4?this.y-=this.speed:null;
   }   
   this.x<0-spriteWidth-translate?gameEnd():null;
-  this.x>transWidth-spriteWidth?this.x=transWidth-spriteWidth:null;
+  this.x>transWidth-spriteWidth?gameEnd():null;
   this.y>canvas.height?this.y=0:null;
   this.y<0-spriteHeight?this.y=canvas.height:null;
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};

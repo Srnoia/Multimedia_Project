@@ -34,12 +34,9 @@ function drawMap(map){
   });
 }
 function generateMap(){
-  //spawnable = [];
-  //entities = entities.splice(0,1);
   var mapPointers = [],
       mapArray = Array.apply(null,Array(32)).map(e=>Array.apply(null,Array(24)).map(e=>null)),
       tempMaze = Array.apply(null,Array(32)).map(e=>[]);
-  //mapArray[0] = Array.apply(null,Array(mapArray[1].length)).map(e=>2);   
   mapArray[0] = (mazeBuffer[0]?mazeBuffer[0][mazeBuffer[0].length-1]:maze[maze.length-1]).map(function(e,i){
     if(e.constructor.name=="Rail"){
       mapPointers.push({x:1,y:i});
@@ -51,7 +48,6 @@ function generateMap(){
       return 2;
     }
   });
-  //maze = Array.apply(null,Array(32)).map(e=>[]);
   mapArray[mapArray.length-1] = Array.apply(null,Array(mapArray[1].length)).map(e=>2);
   for(var i=0;i<mapArray.length-1;i++){
     mapArray[i][0] = 2;
@@ -203,7 +199,6 @@ function generateMap(){
         openings = adjacent.reduce(function(a,b){return a+(b!=null?(b==1?1:0):0)},0);
         if(openings<3){
           if(e.x>1&&e.y>0&&mapArray[e.x-1][e.y]==1&&mapArray[e.x][e.y-1]==1){
-            //mapArray[e.x-1][e.y-1] = 2;
             if(e.x<mapArray.length-1){
               mapArray[e.x+1][e.y] = 1
               mapPointers.push({x:e.x+1,y:e.y});              
@@ -213,7 +208,6 @@ function generateMap(){
             }
           }
           if(e.x>1&&e.y<mapArray[e.x].length-1&&mapArray[e.x-1][e.y]==1&&mapArray[e.x][e.y+1]==1){
-            //mapArray[e.x-1][e.y+1] = 2;
             if(e.x<mapArray.length-1){
               mapArray[e.x+1][e.y] = 1
               mapPointers.push({x:e.x+1,y:e.y});              
@@ -227,7 +221,6 @@ function generateMap(){
               mapArray[e.x-1][e.y-1] = 2;
             }
             else if(mapArray[e.x-1][e.y+1]==null){
-             // mapArray[e.x-1][e.y+1] = 2;
             }
           }
           if(e.x<mapArray.length-2&&e.y<mapArray[e.x].length-2&&mapArray[e.x+1][e.y]==1&&mapArray[e.x][e.y+1]==1){
@@ -235,7 +228,6 @@ function generateMap(){
               mapArray[e.x+1][e.y+1] = 2;
             }
             else if(e.y>1&&mapArray[e.x+1][e.y-1]==null){
-              //mapArray[e.x+1][e.y-1] = 2;
             }
           }    
         } 
@@ -244,7 +236,6 @@ function generateMap(){
     }); 
   }
   //mapArray[mapArray.length-1] = savedArr;
-  //mapArray[1][1] = 1;
   mapArray.forEach(function(e,x){
     e.forEach(function(e,y){
       if(e==1){
@@ -254,11 +245,6 @@ function generateMap(){
         tempMaze[x].push(new Wall(x*spriteWidth,y*spriteHeight,1));
       }
     });
-  });
-  /*maze.forEach(function(e){
-    e.forEach(function(el){
-      el.constructor.name=="Rail"?el.initCollision():null;
-    });
-  });*/  
+  }); 
   return tempMaze;
 }

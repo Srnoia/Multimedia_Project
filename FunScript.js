@@ -7,6 +7,7 @@ var body,
     score = 0,
     spriteSheet = new Image(),
     backGround = new Image(),
+    endScreen = new Image(),
     spriteHeight = 40,
     spriteWidth = 40,
     hero,
@@ -31,6 +32,7 @@ var body,
     mapPointers = [],
     transWidth,
     img = new Image();
+    endScreen.src = "resources/end.jpg";
     spriteSheet.src = "resources/spriteSheet.png";
     backGround.src = "resources/background.jpg";
 
@@ -55,7 +57,7 @@ function game(){
   translate+=scrollSpeed;
   ctx.translate(scrollSpeed,0); 
   transWidth = canvas.width-translate;
-  ctx.clearRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
+  ctx.clearRect(0,0,transWidth/scale+spriteWidth,canvas.height/scale+spriteHeight);
   ctx.fillStyle = "#1122FF";
   ctx.drawImage(backGround, 0, 0, transWidth, canvas.height);
   getFPS();
@@ -83,14 +85,12 @@ function gameEnd(){
   ctx.translate(-translate,0);
   translate = 0;
   clearInterval(interval);
-  setTimeout(function(){ctx.fillStyle = "#FF0000";
-  ctx.font = "72px Verdana";
-  ctx.fillRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
-  ctx.fillStyle = "#0000FF";
-  ctx.fillText("YOU LOST, YOUR SCORE WAS "+score,100,400);
-  ctx.fillText("to play again, press Enter",80,600);
-  ctx.fillText("to view replay, press Space",80,800);
-  ctx.fill();},1); 
+  setTimeout(function(){
+    ctx.clearRect(0,0,canvas.width/scale,canvas.height/scale)
+    ctx.drawImage(endScreen,0,0,canvas.width,canvas.height);
+    ctx.font = "72px Verdana";
+    ctx.fillText(score,350,350);
+  },1); 
 }
 function getFile(file){
   listeners.forEach(function(e){xmlhttp.removeEventListener("readystatechange",e)});
