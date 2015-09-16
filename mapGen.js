@@ -40,7 +40,7 @@ function generateMap(){
       mapArray = Array.apply(null,Array(32)).map(e=>Array.apply(null,Array(24)).map(e=>null)),
       tempMaze = Array.apply(null,Array(32)).map(e=>[]);
   //mapArray[0] = Array.apply(null,Array(mapArray[1].length)).map(e=>2);   
-  mapArray[0] = maze[maze.length-1].map(function(e,i){
+  mapArray[0] = (mazeBuffer[0]?mazeBuffer[0][mazeBuffer[0].length-1]:maze[maze.length-1]).map(function(e,i){
     if(e.constructor.name=="Rail"){
       mapPointers.push({x:1,y:i});
       mapPointers.push({x:2,y:i});
@@ -53,7 +53,7 @@ function generateMap(){
   });
   //maze = Array.apply(null,Array(32)).map(e=>[]);
   mapArray[mapArray.length-1] = Array.apply(null,Array(mapArray[1].length)).map(e=>2);
-  for(var i=0;i<mapArray[0].length-1;i++){
+  for(var i=0;i<mapArray.length-1;i++){
     mapArray[i][0] = 2;
     mapArray[i][mapArray[0].length-1] = 2;
   }                                                                                 
@@ -75,7 +75,7 @@ function generateMap(){
     mapPointers.push({x:rand,y:1});  
     mapPointers.push({x:rand,y:mapArray[rand].length-2});
   }
-  var savedArr = [].concat(mapArray[mapArray.length-1]);  
+  //var savedArr = [].concat(mapArray[mapArray.length-1]);  
   mapPointers.push({x:1,y:1});
   while(typeof mapPointers[0]=="object"){
     mapPointers.forEach(function(e){
@@ -243,7 +243,7 @@ function generateMap(){
       }
     }); 
   }
-  mapArray[mapArray.length-1] = savedArr;
+  //mapArray[mapArray.length-1] = savedArr;
   //mapArray[1][1] = 1;
   mapArray.forEach(function(e,x){
     e.forEach(function(e,y){

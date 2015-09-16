@@ -38,10 +38,14 @@ function restart(){
   clearInterval(interval);
   spawnable = [];
   entities = [];
+  mazeBuffer = [];
   hero = null;
-  maze = Array.apply(null,Array(32)).map(e=>[]),
+  maze = Array.apply(null,Array(32)).map(e=>[]);
   score = 0;
   drawMap(mapData);
+  mazeBuffer[0] = generateMap();
+  mazeBuffer[1] = generateMap();
+  maze.push(mazeBuffer[0].shift());
   interval = setInterval(game,1000/60);
 }
 function spawnWorker(){
@@ -52,4 +56,23 @@ function spawnWorker(){
       replay();
     });  
   }
+}
+function translatePulse(){
+  entities.forEach(function(e){
+    e.x += translate;
+  });
+  maze.shift();
+  if(!mazeBuffer[0].length){
+    mazeBuffer.shift();
+    mazeBuffer.push(generateMap());
+  }
+  maze.push(mazeBuffer[0].shift());
+  spawnable = [];
+  maze.forEach(function(e,x){ 
+    e.map(function(e,y){
+      e.constructor.name=="Rail"?spawnable.push([x*spriteWidth,y*spriteHeight]):null;
+    });
+  });
+  ctx.translate(-translate,0);
+  translate = 0;
 }

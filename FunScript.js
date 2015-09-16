@@ -28,10 +28,11 @@ var body,
     scrollSpeed = -0.5,
     translate = 0,
     mazeBuffer = [],
+    mapPointers = [],
     transWidth,
     img = new Image();
     spriteSheet.src = "resources/spriteSheet.png";
-    backGround.src = "resources/background.png";
+    backGround.src = "resources/background.jpg";
 
 function begin(){
   body = document.querySelector("body");
@@ -40,6 +41,7 @@ function begin(){
   drawMap(mapData);
   mazeBuffer[0] = generateMap();
   mazeBuffer[1] = generateMap();
+  maze.push(mazeBuffer[0].shift());
   scale = 0.5;
   canvas.width = 640/scale;
   canvas.height = 480/scale;
@@ -50,28 +52,31 @@ function begin(){
   interval = setInterval(game,1000/60);
 }
 function game(){
-  //translate+=scrollSpeed;
-  //ctx.translate(scrollSpeed,0);
+  translate+=scrollSpeed;
+  ctx.translate(scrollSpeed,0); 
   transWidth = canvas.width-translate;
   ctx.clearRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
   ctx.fillStyle = "#1122FF";
-  //ctx.drawImage(backGround, 0, 0, transWidth, canvas.height);
+  ctx.drawImage(backGround, 0, 0, transWidth, canvas.height);
   getFPS();
   ctx.font = "30px Verdana";
   ctx.fillStyle = "#000000";
   ctx.fillText("SCORE: "+score,5,35);
   ctx.fill();
+  maze.forEach(function(el,x){
+    el.forEach(function(elem){
+      elem.draw(x*spriteWidth);      
+    })
+  })
   entities.forEach(function(e){
     e.move();
-    e.draw();
     e.collision();
+    e.draw();
   });
-  maze.forEach(function(el){
-    el.forEach(function(elem){
-      elem.draw();
-    })
-  })  
-  hero.draw();
+  if(-translate>=spriteWidth){
+    translatePulse();
+  }
+  ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
   worker.postMessage(entities);
 }
 function gameEnd(){
