@@ -15,7 +15,7 @@ function Mouse(x,y,dir){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Mouse.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteWidth, 0, spriteWidth, spriteHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteSheetWidth, 0, spriteSheetWidth, spriteSheetHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Mouse.prototype.move = function(){
   this.timer==15?this.timer=0:null;

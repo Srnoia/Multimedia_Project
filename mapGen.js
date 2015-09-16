@@ -236,13 +236,15 @@ function generateMap(){
     }); 
   }
   //mapArray[mapArray.length-1] = savedArr;
+  var randY = ~~(Math.random()*2)+3;
+  var randX = ~~(Math.random()*5);
   mapArray.forEach(function(e,x){
     e.forEach(function(e,y){
       if(e==1){
         tempMaze[x].push(new Rail(x*spriteWidth,y*spriteHeight));
       }
       else{
-        tempMaze[x].push(new Wall(x*spriteWidth,y*spriteHeight,1));
+        tempMaze[x].push(new Wall(x*spriteWidth,y*spriteHeight,randX,randY));
       }
     });
   }); 

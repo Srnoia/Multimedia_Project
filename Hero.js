@@ -13,7 +13,7 @@ function Hero(x,y,dir){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Hero.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteWidth, 2*spriteHeight, spriteWidth, spriteHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteSheetWidth, 2*spriteSheetHeight, spriteSheetWidth, spriteSheetHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Hero.prototype.move = function(){
   if(!this.stopped){

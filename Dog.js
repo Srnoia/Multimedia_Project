@@ -15,7 +15,7 @@ function Dog(x,y,dir){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Dog.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteWidth, spriteHeight, spriteWidth, spriteHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteSheetWidth, spriteSheetHeight, spriteSheetWidth, spriteSheetHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Dog.prototype.move = function(){
   this.timer==20?this.timer=0:null;
