@@ -6,7 +6,7 @@ function Wall(x,y,type){
 }
 Wall.prototype.draw = function(x){
   this.x = x;
-  ctx.drawImage(spriteSheet, this.type*spriteWidth, 3*spriteHeight, spriteWidth, spriteHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.type*spriteScreenWidth, 3*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Wall.prototype.collision = function(entity){
   return true;
