@@ -98,7 +98,7 @@ function gameEnd(){
     ctx.clearRect(0,0,canvas.width/scale,canvas.height/scale)
     ctx.drawImage(endScreen,0,0,canvas.width,canvas.height);
     ctx.font = "72px Shojumaru-Regular";
-    ctx.fillText(score,350,350);
+    ctx.fillText("SCORE: "+score,150-String(score).length*15,370);
   },1); 
 }
 function getFile(file){

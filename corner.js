@@ -1,6 +1,7 @@
 function Corner(x,y,type){
   this.x = x;
   this.y = y;
+  this.solid = true;
   this.type = type;
 }
 Corner.prototype.draw = function(x){
