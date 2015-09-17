@@ -9,8 +9,11 @@ var body,
     spriteSheet = new Image(),
     backGround = new Image(),
     endScreen = new Image(),
+    startScreen = new Image(),
     spriteHeight = 40,
     spriteWidth = 40,
+    spriteScreenHeight = 200,
+    spriteScreenWidth = 200,
     hero,
     timerClock = 0,
     timer,
@@ -35,6 +38,7 @@ var body,
     img = new Image();
     style.type = "text/css";
     style.innerHTML = "@font-face{font-family: Shojumaru-Regular;src: url(resources/Shojumaru-Regular.ttf);}";
+    startScreen.src = "resources/Logo.jpg";
     endScreen.src = "resources/end.jpg";
     spriteSheet.src = "resources/spriteSheet.png";
     backGround.src = "resources/background.jpg";
@@ -53,9 +57,10 @@ function begin(){
   canvas.height = 480/scale;
   ctx.scale(scale,scale);
   spawnWorker();
+  ctx.drawImage(startScreen,0,0,canvas.width,canvas.height;
   document.addEventListener("error",function(){console.trace();clearInterval(interval)});
   document.addEventListener("keydown",keyDownEv,true);
-  interval = setInterval(game,1000/60);
+  //interval = setInterval(game,1000/60);
 }
 function game(){
   translate+=scrollSpeed;
