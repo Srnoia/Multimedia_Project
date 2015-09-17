@@ -2,7 +2,7 @@ function Mouse(x,y,dir){
   this.type = "mouse";
   this.x = x;
   this.y = y;
-  this.speed = 5;
+  this.speed = 4;
   this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;
@@ -10,12 +10,12 @@ function Mouse(x,y,dir){
   this.rail = null;
   this.collisionArray = [];
   this.timer = 0;
-  this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
+  this.hitBox = {top:this.y+10,left:this.x+10,bottom:this.y+spriteHeight-10,right:this.x+spriteWidth-10};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Mouse.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteSheetWidth, 0, spriteSheetWidth, spriteSheetHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, 0, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Mouse.prototype.move = function(){
   this.timer==15?this.timer=0:null;
@@ -27,10 +27,10 @@ Mouse.prototype.move = function(){
     this.dir==4?this.y-=this.speed:null;
   }
   this.x<0-spriteWidth-translate?entities.splice(entities.indexOf(this),1):null;
-  this.x>transWidth-spriteWidth?this.x=transWidth-spriteWidth:null;
+  this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
   this.y>canvas.height?this.y=0:null;
   this.y<0-spriteHeight?this.y=canvas.height:null;
-  this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
+  this.hitBox = {top:this.y+10,left:this.x+10,bottom:this.y+spriteHeight-10,right:this.x+spriteWidth-10};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
@@ -50,8 +50,8 @@ Mouse.prototype.collision = function(){
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
     entities.splice(entities.indexOf(this),1);
-    spawner(Mouse);
-    ~~(Math.random()*2)?spawner(Dog):null;
+    //spawner(Mouse);
+    //~~(Math.random()*2)?spawner(Dog):null;
     score++;
     //entities.push(new Mouse(~~(Math.random()*transWidth),~~(Math.random()*canvas.height)));
     //entities.push(new Dog(~~(Math.random()*transWidth),~~(Math.random()*canvas.height)));

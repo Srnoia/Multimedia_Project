@@ -4,6 +4,7 @@ function Rail(x,y,type){
   this.collisionArray = [];
   this.tileIndexX = ~~(this.x/spriteWidth);
   this.tileIndexY = ~~(this.y/spriteHeight);
+  this.solid = false;
   this.type = type|0;
   this.hitBox = {left:this.x,right:this.x+spriteWidth,top:this.y,bottom:this.y+spriteHeight}
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
@@ -34,7 +35,7 @@ Rail.prototype.collision = function(entity){
       if(entity.hitBox.centerX<this.hitBox.centerX+entity.speed&&entity.hitBox.centerX>this.hitBox.centerX-entity.speed&&entity.hitBox.centerY>this.hitBox.centerY-entity.speed&&entity.hitBox.centerY<this.hitBox.centerY+entity.speed){
         switch(entity.movement){
           case "up":
-            if((this.collisionArray[0]&&!this.collisionArray[0].collision()||!this.collisionArray[0])){
+            if((this.collisionArray[0]&&!this.collisionArray[0].solid||!this.collisionArray[0])){
               entity.x = this.x;
               entity.dir = 4;
               entity.stopped = false;
@@ -42,7 +43,7 @@ Rail.prototype.collision = function(entity){
             }
             break;
           case "down":
-            if((this.collisionArray[1]&&!this.collisionArray[1].collision()||!this.collisionArray[1])){
+            if((this.collisionArray[1]&&!this.collisionArray[1].solid||!this.collisionArray[1])){
               entity.x = this.x;
               entity.dir = 3;
               entity.stopped = false;
@@ -50,7 +51,7 @@ Rail.prototype.collision = function(entity){
             }
             break;
           case "left":
-            if((this.collisionArray[3]&&!this.collisionArray[3].collision()||!this.collisionArray[3])){
+            if((this.collisionArray[3]&&!this.collisionArray[3].solid||!this.collisionArray[3])){
               entity.y = this.y;
               entity.dir = 1;
               entity.stopped = false;
@@ -58,7 +59,7 @@ Rail.prototype.collision = function(entity){
             }
             break;
           case "right":
-            if((this.collisionArray[2]&&!this.collisionArray[2].collision()||!this.collisionArray[2])){
+            if((this.collisionArray[2]&&!this.collisionArray[2].solid||!this.collisionArray[2])){
               entity.y = this.y;
               entity.dir = 2;
               entity.stopped = false;
@@ -66,10 +67,10 @@ Rail.prototype.collision = function(entity){
             }
             break;
         }
-        if(entity.dir==1&&this.collisionArray[3]&&this.collisionArray[3].collision()||
-           entity.dir==2&&this.collisionArray[2]&&this.collisionArray[2].collision()||
-           entity.dir==3&&this.collisionArray[1]&&this.collisionArray[1].collision()||
-           entity.dir==4&&this.collisionArray[0]&&this.collisionArray[0].collision())
+        if(entity.dir==1&&this.collisionArray[3]&&this.collisionArray[3].solid||
+           entity.dir==2&&this.collisionArray[2]&&this.collisionArray[2].solid||
+           entity.dir==3&&this.collisionArray[1]&&this.collisionArray[1].solid||
+           entity.dir==4&&this.collisionArray[0]&&this.collisionArray[0].solid)
         {  
           entity.stopped = true;
           entity.x = this.x;

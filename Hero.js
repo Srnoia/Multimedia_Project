@@ -2,18 +2,18 @@ function Hero(x,y,dir){
   this.type = "hero";
   this.x = x;
   this.y = y;
-  this.speed = 5;
+  this.speed = 3;
   this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;
   this.rail = null;
   this.collisionArray = [];
-  this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
+  this.hitBox = {top:this.y+5,left:this.x+5,bottom:this.y+spriteHeight-5,right:this.x+spriteWidth-5};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Hero.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteSheetWidth, 2*spriteSheetHeight, spriteSheetWidth, spriteSheetHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, 2*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Hero.prototype.move = function(){
   if(!this.stopped){
@@ -23,10 +23,10 @@ Hero.prototype.move = function(){
     this.dir==4?this.y-=this.speed:null;
   }   
   this.x<0-spriteWidth-translate?gameEnd():null;
-  this.x>transWidth-spriteWidth?gameEnd():null;
+  this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
   this.y>canvas.height?this.y=0:null;
   this.y<0-spriteHeight?this.y=canvas.height:null;
-  this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
+  this.hitBox = {top:this.y+5,left:this.x+5,bottom:this.y+spriteHeight-5,right:this.x+spriteWidth-5};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }

@@ -12,8 +12,8 @@ var body,
     startScreen = new Image(),
     spriteHeight = 40,
     spriteWidth = 40,
-    spriteSheetWidth = 200,
-    spriteSheetHeight = 200,
+    spriteScreenHeight = 200,
+    spriteScreenWidth = 200,
     hero,
     timerClock = 0,
     timer,
@@ -30,7 +30,7 @@ var body,
     scale,
     curImage = 0,
     timeout,
-    scrollSpeed = -0.5,
+    scrollSpeed = -1,
     translate = 0,
     mazeBuffer = [],
     mapPointers = [],
@@ -56,8 +56,8 @@ function begin(){
   canvas.width = 640/scale;
   canvas.height = 480/scale;
   ctx.scale(scale,scale);
-  ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   spawnWorker();
+  ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   document.addEventListener("error",function(){console.trace();clearInterval(interval)});
   document.addEventListener("keydown",keyDownEv,true);
   //interval = setInterval(game,1000/60);
@@ -69,7 +69,6 @@ function game(){
   ctx.clearRect(0,0,transWidth/scale+spriteWidth,canvas.height/scale+spriteHeight);
   ctx.fillStyle = "#1122FF";
   ctx.drawImage(backGround, 0, 0, transWidth, canvas.height);
-  getFPS();
   ctx.font = "30px Verdana";
   ctx.fillStyle = "#000000";
   ctx.fillText("SCORE: "+score,5,35);
@@ -83,12 +82,13 @@ function game(){
     e.move();
     e.collision();
     e.draw();
-  });
+  });           
   if(-translate>=spriteWidth){
     translatePulse();
   }
   ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
-  worker.postMessage(entities);
+  //worker.postMessage(entities);
+  getFPS();
 }
 function gameEnd(){
   ctx.translate(-translate,0);

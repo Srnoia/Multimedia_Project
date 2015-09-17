@@ -2,7 +2,7 @@ function Dog(x,y,dir){
   this.type = "dog";
   this.x = x;
   this.y = y;
-  this.speed = 3;
+  this.speed = 2;
   this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;
@@ -15,7 +15,7 @@ function Dog(x,y,dir){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Dog.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteSheetWidth, spriteSheetHeight, spriteSheetWidth, spriteSheetHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Dog.prototype.move = function(){
   this.timer==20?this.timer=0:null;
@@ -27,7 +27,7 @@ Dog.prototype.move = function(){
     this.dir==4?this.y-=this.speed:null;
   }
   this.x<0-spriteWidth-translate?entities.splice(entities.indexOf(this),1):null;
-  this.x>transWidth-spriteWidth?this.x=transWidth-spriteWidth:null;
+  this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
   this.y>canvas.height?this.y=0:null;
   this.y<0-spriteHeight?this.y=canvas.height:null; 
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
