@@ -57,7 +57,7 @@ function begin(){
   canvas.height = 480/scale;
   ctx.scale(scale,scale);
   spawnWorker();
-  ctx.drawImage(startScreen,0,0,canvas.width,canvas.height;
+  ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   document.addEventListener("error",function(){console.trace();clearInterval(interval)});
   document.addEventListener("keydown",keyDownEv,true);
   //interval = setInterval(game,1000/60);
