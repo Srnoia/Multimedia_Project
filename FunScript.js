@@ -68,7 +68,7 @@ function begin(){
   //interval = setInterval(game,1000/60);
 }
 function game(){
-  //var startTime = new Date();
+  //var startTime = new Date(); // Acceptable times are below 10
   translate+=scrollSpeed*scaledWidth;
   ctx.translate(scrollSpeed*scaledWidth,0); 
   transWidth = canvas.width-translate;
@@ -95,8 +95,8 @@ function game(){
   ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
   //worker.postMessage(entities);
   getFPS();
- // var endTime = new Date();
-//  console.log(endTime.getTime()-startTime.getTime());
+  //var endTime = new Date();
+  //console.log(endTime.getTime()-startTime.getTime());
 }
 function gameEnd(){
   clearInterval(interval);
@@ -110,9 +110,9 @@ function gameEnd(){
     ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
     ctx.strokeStyle = "white";
     ctx.lineWidth = 3;
-    ctx.fillText("SCORE: "+score,(80-String(score).length*15)*scaledWidth,190*scaledHeight);
-    ctx.strokeText("SCORE: "+score,(80-String(score).length*15)*scaledWidth,190*scaledHeight);
-    ctx.putImageData(lastFrame,canvas.width-lastFrame.width,0);
+    ctx.fillText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,185*scaledHeight);
+    ctx.strokeText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,185*scaledHeight);
+    ctx.putImageData(lastFrame,313.3*scaledWidth,23.3*scaledHeight);
    // setTimeout(function(){ctx.drawImage(lastFrame,canvas.width/2,0,canvas.width/1.2,canvas.height/1.2);},0);
   },1000); 
 }

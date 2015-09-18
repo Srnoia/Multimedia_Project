@@ -19,7 +19,7 @@ Mouse.prototype.draw = function(){
 }
 Mouse.prototype.move = function(){
   this.timer==15?this.timer=0:null;
-  !this.timer?(function(){this.movement = this.movementObj[~~(Math.random()*5)];this.timer++;}).call(this,null):this.timer++;
+  !this.timer?(this.movement = this.movementObj[~~(Math.random()*5)],this.timer++):this.timer++;
   if(!this.stopped){
     this.dir==1?this.x-=this.speed:null;
     this.dir==2?this.x+=this.speed:null;

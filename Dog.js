@@ -19,12 +19,17 @@ Dog.prototype.draw = function(){
 }
 Dog.prototype.move = function(){
   this.timer==20?this.timer=0:null;
-  !this.timer?(function(){this.movement = this.movementObj[~~(Math.random()*5)];this.timer++;}).call(this,null):this.timer++;
+  !this.timer?(this.movement = this.movementObj[~~(Math.random()*5)],this.timer++):this.timer++;
   if(!this.stopped){
     this.dir==1?this.x-=this.speed:null;
     this.dir==2?this.x+=this.speed:null;
     this.dir==3?this.y+=this.speed:null;
     this.dir==4?this.y-=this.speed:null;
+  }  
+  if(this.hitBox.centerX<hero.hitBox.centerX+(100*scaledWidth)&&this.hitBox.centerX>hero.hitBox.centerX-(100*scaledWidth)&&
+     this.hitBox.centerY>hero.hitBox.centerY-(100*scaledHeight)&&this.hitBox.centerY<hero.hitBox.centerY+(100*scaledHeight))
+  {
+    this.chase();   
   }
   this.x<0-spriteWidth-translate?entities.splice(entities.indexOf(this),1):null;
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
@@ -51,4 +56,20 @@ Dog.prototype.collision = function(){
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
     gameEnd();   
   }
+}
+Dog.prototype.chase = function(){
+  var choices = [];
+  if(this.x>hero.x){
+    choices.push("left");
+  }  
+  else if(this.x<hero.x){
+    choices.push("right");
+  }
+  if(this.y>hero.y){
+    choices.push("up");
+  }
+  else if(this.y<hero.y){
+    choices.push("down");
+  }
+  this.movement = choices[~~(Math.random()*2)];
 }
