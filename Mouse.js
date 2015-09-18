@@ -2,7 +2,7 @@ function Mouse(x,y,dir){
   this.type = "mouse";
   this.x = x;
   this.y = y;
-  this.speed = 4;
+  this.speed = 2*scaledWidth;
   this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;

@@ -2,7 +2,7 @@ function Dog(x,y,dir){
   this.type = "dog";
   this.x = x;
   this.y = y;
-  this.speed = 2;
+  this.speed = 1*scaledWidth;
   this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;

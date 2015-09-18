@@ -10,8 +10,9 @@ var body,
     backGround = new Image(),
     endScreen = new Image(),
     startScreen = new Image(),
-    spriteHeight = 40,
-    spriteWidth = 40,
+    lastFrame = new Image(),
+    spriteHeight = 20,
+    spriteWidth = 20,
     spriteScreenHeight = 200,
     spriteScreenWidth = 200,
     hero,
@@ -30,12 +31,20 @@ var body,
     scale,
     curImage = 0,
     timeout,
-    scrollSpeed = -1,
+    scrollSpeed = -0.5,
     translate = 0,
     mazeBuffer = [],
     mapPointers = [],
     transWidth,
+    scaledWidth,
+    scaledHeight,
     img = new Image();
+    canvas.width = 640;
+    canvas.height = 480;
+    scaledWidth = canvas.width/640;
+    scaledHeight = canvas.height/480;
+    spriteWidth = canvas.width/32;
+    spriteHeight = canvas.height/24;
     style.type = "text/css";
     style.innerHTML = "@font-face{font-family: Shojumaru-Regular;src: url(resources/Shojumaru-Regular.ttf);}";
     startScreen.src = "resources/Logo.jpg";
@@ -52,10 +61,6 @@ function begin(){
   mazeBuffer[0] = generateMap();
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
-  scale = 0.5;
-  canvas.width = 640/scale;
-  canvas.height = 480/scale;
-  ctx.scale(scale,scale);
   spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   document.addEventListener("error",function(){console.trace();clearInterval(interval)});
@@ -63,15 +68,16 @@ function begin(){
   //interval = setInterval(game,1000/60);
 }
 function game(){
-  translate+=scrollSpeed;
-  ctx.translate(scrollSpeed,0); 
+  //var startTime = new Date();
+  translate+=scrollSpeed*scaledWidth;
+  ctx.translate(scrollSpeed*scaledWidth,0); 
   transWidth = canvas.width-translate;
-  ctx.clearRect(0,0,transWidth/scale+spriteWidth,canvas.height/scale+spriteHeight);
+  ctx.clearRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
   ctx.fillStyle = "#1122FF";
-  ctx.drawImage(backGround, 0, 0, transWidth, canvas.height);
-  ctx.font = "30px Verdana";
+  ctx.drawImage(backGround, 0-translate, 0, canvas.width, canvas.height);
+  ctx.font = 15*scaledWidth+"px Verdana";
   ctx.fillStyle = "#000000";
-  ctx.fillText("SCORE: "+score,5,35);
+  ctx.fillText("SCORE: "+score,5-translate,35*scaledHeight);
   ctx.fill();
   maze.forEach(function(el,x){
     el.forEach(function(elem){
@@ -89,16 +95,25 @@ function game(){
   ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
   //worker.postMessage(entities);
   getFPS();
+ // var endTime = new Date();
+//  console.log(endTime.getTime()-startTime.getTime());
 }
 function gameEnd(){
-  ctx.translate(-translate,0);
-  translate = 0;
   clearInterval(interval);
   setTimeout(function(){
-    ctx.clearRect(0,0,canvas.width/scale,canvas.height/scale)
+   // lastFrame.src = canvas.toDataURL("png");
+    lastFrame = ctx.getImageData((hero.x-150*scaledWidth),(hero.y-100*scaledHeight),300*scaledWidth,200*scaledHeight);
+    ctx.translate(-translate,0);
+    translate = 0;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.drawImage(endScreen,0,0,canvas.width,canvas.height);
-    ctx.font = "72px Shojumaru-Regular";
-    ctx.fillText("SCORE: "+score,150-String(score).length*15,370);
+    ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 3;
+    ctx.fillText("SCORE: "+score,(80-String(score).length*15)*scaledWidth,190*scaledHeight);
+    ctx.strokeText("SCORE: "+score,(80-String(score).length*15)*scaledWidth,190*scaledHeight);
+    ctx.putImageData(lastFrame,canvas.width-lastFrame.width,0);
+   // setTimeout(function(){ctx.drawImage(lastFrame,canvas.width/2,0,canvas.width/1.2,canvas.height/1.2);},0);
   },1); 
 }
 function getFile(file){
@@ -123,6 +138,6 @@ function getFPS(){
     timerClock=0;
   }
   ctx.fillStyle = "#000000";
-  ctx.font = "30px Verdana";
-  ctx.fillText(fps,400,70);
+  ctx.font = 15*scaledWidth+"px Verdana";
+  ctx.fillText(fps,(200*scaledWidth)-translate,35*scaledHeight);
 }
