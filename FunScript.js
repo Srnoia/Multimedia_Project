@@ -114,7 +114,7 @@ function gameEnd(){
     ctx.strokeText("SCORE: "+score,(80-String(score).length*15)*scaledWidth,190*scaledHeight);
     ctx.putImageData(lastFrame,canvas.width-lastFrame.width,0);
    // setTimeout(function(){ctx.drawImage(lastFrame,canvas.width/2,0,canvas.width/1.2,canvas.height/1.2);},0);
-  },1); 
+  },1000); 
 }
 function getFile(file){
   listeners.forEach(function(e){xmlhttp.removeEventListener("readystatechange",e)});

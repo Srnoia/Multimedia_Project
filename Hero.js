@@ -8,7 +8,7 @@ function Hero(x,y,dir){
   this.movement = null;
   this.rail = null;
   this.collisionArray = [];
-  this.hitBox = {top:this.y+5,left:this.x+5,bottom:this.y+spriteHeight-5,right:this.x+spriteWidth-5};
+  this.hitBox = {top:this.y+(2.5*scaledHeight),left:this.x+(2.5*scaledWidth),bottom:this.y+spriteHeight-(2.5*scaledHeight),right:this.x+spriteWidth-(2.5*scaledWidth)};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
@@ -26,7 +26,7 @@ Hero.prototype.move = function(){
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
   this.y>canvas.height?this.y=0:null;
   this.y<0-spriteHeight?this.y=canvas.height:null;
-  this.hitBox = {top:this.y+5,left:this.x+5,bottom:this.y+spriteHeight-5,right:this.x+spriteWidth-5};
+  this.hitBox = {top:this.y+(2.5*scaledHeight),left:this.x+(2.5*scaledWidth),bottom:this.y+spriteHeight-(2.5*scaledHeight),right:this.x+spriteWidth-(2.5*scaledWidth)};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
