@@ -40,3 +40,9 @@ function keyDownEv(e){
       break;                                                                                                                                                
   }  
 }
+function touchDown(e){
+  console.log(e);
+}
+function touchMove(e){
+  console.log(e);
+}

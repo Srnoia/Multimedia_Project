@@ -1,4 +1,5 @@
 function drawMap(map){
+  console.trace();
   var map = map.replace(/\r/g,"").split('\n'); // FOR SOME REASON text HAD AN ODD \r
   map.forEach(function(e,y){
     e.split('').forEach(function(el,x){
@@ -33,21 +34,31 @@ function drawMap(map){
     })
   });
 }
-function generateMap(){
+function generateMap(first){
   var mapPointers = [],
       mapArray = Array.apply(null,Array(32)).map(e=>Array.apply(null,Array(24)).map(e=>null)),
       tempMaze = Array.apply(null,Array(32)).map(e=>[]);
-  mapArray[0] = (mazeBuffer[0]?mazeBuffer[0][mazeBuffer[0].length-1]:maze[maze.length-1]).map(function(e,i){
-    if(e.constructor.name=="Rail"){
-      mapPointers.push({x:1,y:i});
-      mapPointers.push({x:2,y:i});
-      mapPointers.push({x:3,y:i});
-      return 1;
-    }
-    else{
-      return 2;
-    }
-  });
+  if(first){
+    mapPointers.push({x:1,y:1});
+    mapPointers.push({x:2,y:1});
+    mapPointers.push({x:3,y:1});
+    mapPointers.push({x:9,y:9});
+    mapPointers.push({x:10,y:10});
+    mapPointers.push({x:11,y:11});
+  }
+  else{
+    mapArray[0] = (mazeBuffer[0]?mazeBuffer[0][mazeBuffer[0].length-1]:maze[maze.length-1]).map(function(e,i){
+      if(e.constructor.name=="Rail"){
+        mapPointers.push({x:1,y:i});
+        mapPointers.push({x:2,y:i});
+        mapPointers.push({x:3,y:i});
+        return 1;
+      }
+      else{
+        return 2;
+      }
+    });
+  }
   mapArray[mapArray.length-1] = Array.apply(null,Array(mapArray[1].length)).map(e=>2);
   for(var i=0;i<mapArray.length-1;i++){
     mapArray[i][0] = 2;

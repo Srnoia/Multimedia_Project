@@ -40,9 +40,12 @@ function restart(){
   entities = [];
   mazeBuffer = [];
   hero = null;
-  maze = Array.apply(null,Array(32)).map(e=>[]);
+  //maze = Array.apply(null,Array(32)).map(e=>[]);
+  maze = generateMap(true);
+  entities.push(new Hero(spriteWidth*10,spriteHeight*10));
+  hero = entities[entities.length-1];
   score = 0;
-  drawMap(mapData);
+  //drawMap(mapData);
   mazeBuffer[0] = generateMap();
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());

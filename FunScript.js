@@ -34,7 +34,6 @@ var body,
     scrollSpeed = -0.5,
     translate = 0,
     mazeBuffer = [],
-    mapPointers = [],
     transWidth,
     scaledWidth,
     scaledHeight,
@@ -64,14 +63,17 @@ function begin(){
   spriteWidth = canvas.width/32;
   spriteHeight = canvas.height/24;
   scrollSpeed = -0.5*scaledWidth;
-  getFile("resources/levels.txt");
-  drawMap(mapData);
+  //getFile("resources/levels.txt");
+  //drawMap(mapData);
+  maze = generateMap(true);
   mazeBuffer[0] = generateMap();
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
   spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   document.addEventListener("keydown",keyDownEv,true);
+  document.addEventListener("touchdown",touchDown,true);
+  document.addEventListener("touchmove",touchMove,true);
   //interval = setInterval(game,1000/60);
 }
 function game(){
