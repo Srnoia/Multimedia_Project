@@ -77,8 +77,8 @@ function begin(){
 }
 function game(){
   //var startTime = new Date(); // Acceptable times are below 10
-  translate+=scrollSpeed*scaledWidth;
-  ctx.translate(scrollSpeed*scaledWidth,0); 
+  translate+=scrollSpeed;
+  ctx.translate(scrollSpeed,0); 
   transWidth = canvas.width-translate;
   ctx.clearRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
   ctx.fillStyle = "#1122FF";
