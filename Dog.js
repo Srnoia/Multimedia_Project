@@ -19,12 +19,13 @@ Dog.prototype.draw = function(){
 }
 Dog.prototype.move = function(){
   this.timer==20?this.timer=0:null;
-  !this.timer?(this.movement = this.movementObj[~~(Math.random()*5)],this.timer++):this.timer++;
+  !this.timer?(this.movement = this.movementObj[~~(Math.random()*4)+1],this.timer++):this.timer++;
   if(!this.stopped){
-    this.dir==1?this.x-=this.speed:null;
-    this.dir==2?this.x+=this.speed:null;
-    this.dir==3?this.y+=this.speed:null;
-    this.dir==4?this.y-=this.speed:null;
+    this.dir==0?(this.x=this.rail.x,this.y=this.rail.y):null;
+    this.dir==1?(this.x-=this.speed,this.y=this.rail.y):null;
+    this.dir==2?(this.x+=this.speed,this.y=this.rail.y):null;
+    this.dir==3?(this.y+=this.speed,this.x=this.rail.x):null;
+    this.dir==4?(this.y-=this.speed,this.x=this.rail.x):null;
   }  
   if(this.hitBox.centerX<hero.hitBox.centerX+(100*scaledWidth)&&this.hitBox.centerX>hero.hitBox.centerX-(100*scaledWidth)&&
      this.hitBox.centerY>hero.hitBox.centerY-(100*scaledHeight)&&this.hitBox.centerY<hero.hitBox.centerY+(100*scaledHeight))

@@ -71,7 +71,6 @@ function begin(){
   maze.push(mazeBuffer[0].shift());
   spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
-  document.addEventListener("error",function(){console.trace();clearInterval(interval)});
   document.addEventListener("keydown",keyDownEv,true);
   //interval = setInterval(game,1000/60);
 }
@@ -91,12 +90,12 @@ function game(){
     el.forEach(function(elem){
       elem.draw(x*spriteWidth);      
     })
-  })
+  });
   entities.forEach(function(e){
     e.move();
     e.collision();
     e.draw();
-  });           
+  });
   if(-translate>=spriteWidth){
     translatePulse();
   }

@@ -59,7 +59,7 @@ function spawnWorker(){
 }
 function translatePulse(){
   entities.forEach(function(e){
-    e.x += translate;
+    e.x -= spriteWidth;
   });
   maze.shift();
   if(!mazeBuffer[0].length){
