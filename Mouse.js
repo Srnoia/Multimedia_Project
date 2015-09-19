@@ -20,12 +20,11 @@ Mouse.prototype.draw = function(){
 Mouse.prototype.move = function(){
   this.timer==15?this.timer=0:null;
   !this.timer?(this.movement = this.movementObj[~~(Math.random()*4)+1],this.timer++):this.timer++;
-  if(!this.stopped){
-    this.dir==0?(this.x=this.rail.x,this.y=this.rail.y):null;
-    this.dir==1?(this.x-=this.speed,this.y=this.rail.y):null;
-    this.dir==2?(this.x+=this.speed,this.y=this.rail.y):null;
-    this.dir==3?(this.y+=this.speed,this.x=this.rail.x):null;
-    this.dir==4?(this.y-=this.speed,this.x=this.rail.x):null;
+  if(!this.stopped){  
+    this.dir==1?this.x-=this.speed:null;
+    this.dir==2?this.x+=this.speed:null;
+    this.dir==3?this.y+=this.speed:null;
+    this.dir==4?this.y-=this.speed:null;
   }
   this.x<0-spriteWidth-translate?entities.splice(entities.indexOf(this),1):null;
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;

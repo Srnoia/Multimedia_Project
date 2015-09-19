@@ -2,13 +2,13 @@ function Rail(x,y,type){
   this.x = x;
   this.y = y;
   this.collisionArray = [];
-  this.tileIndexX = ~~(this.x/spriteWidth);
-  this.tileIndexY = ~~(this.y/spriteHeight);
   this.solid = false;
   this.type = type|0;
   this.hitBox = {left:this.x,right:this.x+spriteWidth,top:this.y,bottom:this.y+spriteHeight}
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
+  this.tileIndexX = ~~(this.hitBox.centerX/spriteWidth);
+  this.tileIndexY = ~~(this.hitBox.centerY/spriteHeight);
 }
 Rail.prototype.draw = function(x){
   this.x = x;
