@@ -72,7 +72,7 @@ function translatePulse(){
     e.map(function(e,y){
       e.constructor.name=="Rail"?spawnable.push([x*spriteWidth,y*spriteHeight]):null;
       if(x==maze.length-1&&e.constructor.name=="Rail"){
-        !~~(Math.random()*30)?(entities.push(~~(Math.random()*3)?new Mouse(x*spriteWidth,y*spriteHeight):new Dog(x*spriteWidth,y*spriteHeight)),entities[entities.length-1].rail=e):null
+        !~~(Math.random()*30)?(entities.push(~~(Math.random()*2)?new Mouse(x*spriteWidth,y*spriteHeight):new Dog(x*spriteWidth,y*spriteHeight)),entities[entities.length-1].rail=e):null
       }
     });
   });

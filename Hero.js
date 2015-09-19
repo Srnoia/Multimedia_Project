@@ -31,8 +31,8 @@ Hero.prototype.move = function(){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Hero.prototype.collision = function(){
-  this.tileIndexX = ~~(this.x/spriteWidth);
-  this.tileIndexY = ~~(this.y/spriteHeight);
+  this.tileIndexX = ~~(this.hitBox.centerX/spriteWidth);
+  this.tileIndexY = ~~(this.hitBox.centerY/spriteHeight);
   this.tileIndexX<0?this.tileIndexX=0:null;
   this.tileIndexY<0?this.tileIndexY=canvas.height/spriteHeight-1:null;
   this.tileIndexY>canvas.height/spriteHeight-1?this.tileIndexY=0:null;

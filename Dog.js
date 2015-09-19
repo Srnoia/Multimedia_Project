@@ -71,5 +71,5 @@ Dog.prototype.chase = function(){
   else if(this.y<hero.y){
     choices.push("down");
   }
-  this.movement = choices[~~(Math.random()*2)];
+  this.movement = choices[~~(Math.random()*choices.length)];
 }

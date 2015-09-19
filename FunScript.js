@@ -39,14 +39,9 @@ var body,
     scaledWidth,
     scaledHeight,
     img = new Image();
-    canvas.width = 640;
-    canvas.height = 480;
-    scaledWidth = canvas.width/640;
-    scaledHeight = canvas.height/480;
-    spriteWidth = canvas.width/32;
-    spriteHeight = canvas.height/24;
     style.type = "text/css";
-    style.innerHTML = "@font-face{font-family: Shojumaru-Regular;src: url(resources/Shojumaru-Regular.ttf);}";
+    style.innerHTML = "@font-face{font-family: Shojumaru-Regular;src: url(resources/Shojumaru-Regular.ttf);}"+
+    "canvas{position:absolute;left:5;top:5}";
     startScreen.src = "resources/Logo.jpg";
     endScreen.src = "resources/end.jpg";
     spriteSheet.src = "resources/spriteSheet.png";
@@ -56,6 +51,19 @@ function begin(){
   document.querySelector("head").appendChild(style);
   body = document.querySelector("body");
   body.appendChild(canvas);
+  if(window.innerWidth>window.innerHeight){
+    canvas.height = window.innerHeight-8;
+    canvas.width = 640*(canvas.height/480)-8;
+  }
+  else{
+    canvas.width = window.innerWidth-8;
+    canvas.height = 480*(canvas.width/640)-8;
+  }
+  scaledWidth = canvas.width/640;
+  scaledHeight = canvas.height/480;
+  spriteWidth = canvas.width/32;
+  spriteHeight = canvas.height/24;
+  scrollSpeed = -0.5*scaledWidth;
   getFile("resources/levels.txt");
   drawMap(mapData);
   mazeBuffer[0] = generateMap();
@@ -109,7 +117,7 @@ function gameEnd(){
     ctx.drawImage(endScreen,0,0,canvas.width,canvas.height);
     ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2*scaledWidth;
     ctx.fillText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,185*scaledHeight);
     ctx.strokeText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,185*scaledHeight);
     ctx.putImageData(lastFrame,313.3*scaledWidth,23.3*scaledHeight);
