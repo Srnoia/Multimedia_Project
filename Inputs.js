@@ -29,19 +29,28 @@ function keyDownEv(e){
       ctx.translate(-translate,0);
       translate = 0;
       clearTimeout(timeout);
-      worker.postMessage("clear");
+      //worker.postMessage("clear");
       restart();
       break;
     case 32: // Space
       e.preventDefault();
-      clearTimeout(timeout);
-      curImage = 0;
-      worker.postMessage("end");
+      if(!startFlag){
+        paused?interval = setInterval(game,1000/60):(clearInterval(interval),setTimeout(function(){
+        ctx.font = 36*scaledWidth+"px Verdana";
+        ctx.fillText("PAUSED",canvas.width/2-(60*scaledWidth),canvas.height/2-(10*scaledHeight));
+        },5));
+        paused = !paused;
+      }
       break;                                                                                                                                                
   }  
 }
 function touchDown(e){
-  console.log(e);
+  if(startFlag){
+    ctx.translate(-translate,0);
+    translate = 0;
+    clearTimeout(timeout);
+    restart();
+  }
 }
 function touchMove(e){
   console.log(e);

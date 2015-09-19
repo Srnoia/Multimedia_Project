@@ -37,6 +37,8 @@ var body,
     transWidth,
     scaledWidth,
     scaledHeight,
+    startFlag = true,
+    paused = false,
     img = new Image();
     style.type = "text/css";
     style.innerHTML = "@font-face{font-family: Shojumaru-Regular;src: url(resources/Shojumaru-Regular.ttf);}"+
@@ -69,10 +71,10 @@ function begin(){
   mazeBuffer[0] = generateMap();
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
-  spawnWorker();
+  //spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   document.addEventListener("keydown",keyDownEv,true);
-  document.addEventListener("touchdown",touchDown,true);
+  document.addEventListener("click",touchDown,true);
   document.addEventListener("touchmove",touchMove,true);
   //interval = setInterval(game,1000/60);
 }
@@ -109,6 +111,8 @@ function game(){
 }
 function gameEnd(){
   clearInterval(interval);
+  startFlag = true;
+  ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
   setTimeout(function(){
    // lastFrame.src = canvas.toDataURL("png");
     lastFrame = ctx.getImageData((hero.x-150*scaledWidth),(hero.y-100*scaledHeight),300*scaledWidth,200*scaledHeight);
@@ -116,12 +120,13 @@ function gameEnd(){
     translate = 0;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.drawImage(endScreen,0,0,canvas.width,canvas.height);
-    ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
+    ctx.font = 36*scaledWidth+"px Shojumaru-Regular";    
     ctx.strokeStyle = "white";
     ctx.lineWidth = 2*scaledWidth;
     ctx.fillText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,185*scaledHeight);
     ctx.strokeText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,185*scaledHeight);
     ctx.putImageData(lastFrame,313.3*scaledWidth,23.3*scaledHeight);
+    paused = false; // was causing game interval to be set twice if you hit spacebar within second of you death
    // setTimeout(function(){ctx.drawImage(lastFrame,canvas.width/2,0,canvas.width/1.2,canvas.height/1.2);},0);
   },1000); 
 }

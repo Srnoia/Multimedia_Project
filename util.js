@@ -49,6 +49,7 @@ function restart(){
   mazeBuffer[0] = generateMap();
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
+  startFlag = false;
   interval = setInterval(game,1000/60);
 }
 function spawnWorker(){
