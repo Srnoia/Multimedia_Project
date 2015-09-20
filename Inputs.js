@@ -45,6 +45,7 @@ function keyDownEv(e){
   }  
 }
 function touchDown(e){
+  e.preventDefault();
   if(startFlag){
     ctx.translate(-translate,0);
     translate = 0;
@@ -52,6 +53,34 @@ function touchDown(e){
     restart();
   }
 }
+function touchStart(e){
+  if(joyPos=="height"){
+    var touchX = e.touches[0].clientX-5;
+    var touchY = e.touches[0].clientY-canvas.height-5;
+  }
+  else{
+    var touchX = e.touches[0].clientX-canvas.width-5;
+    var touchY = e.touches[0].clientY-5;
+  }
+  if(touchX>knobX&&touchX<knobX+knobWidth&&touchY>knobY&&touchY<knobY+knobWidth){
+    knobSelected = true;
+  }
+}
+function touchEnd(e){
+  knobSelected = false;
+  drawJoyStick();  
+}
 function touchMove(e){
-  console.log(e);
+  e.preventDefault();
+  if(joyPos=="height"){
+    var touchX = e.touches[0].clientX-5;
+    var touchY = e.touches[0].clientY-canvas.height-5;
+  }
+  else{
+    var touchX = e.touches[0].clientX-canvas.width-5;
+    var touchY = e.touches[0].clientY-5;
+  }
+  if(knobSelected){
+    drawJoyStick(touchX-knobX,touchY-knobY);
+  }
 }

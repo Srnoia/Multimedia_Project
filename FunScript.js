@@ -1,5 +1,7 @@
 var body,
     canvas = document.createElement("canvas"),
+    joyCanvas = document.createElement("canvas"),
+    joyCtx = joyCanvas.getContext("2d"),
     ctx = canvas.getContext("2d"),
     style = document.createElement("style"),
     moveObj = {},
@@ -11,10 +13,18 @@ var body,
     endScreen = new Image(),
     startScreen = new Image(),
     lastFrame = new Image(),
+    joyStick = new Image(),
     spriteHeight = 20,
     spriteWidth = 20,
     spriteScreenHeight = 200,
     spriteScreenWidth = 200,
+    joySpriteWidth = 512,
+    joySpriteHeight = 512,
+    joyPos,
+    knobX,
+    knobY,
+    knobWidth,
+    knobSelected = false,
     hero,
     timerClock = 0,
     timer,
@@ -41,8 +51,10 @@ var body,
     paused = false,
     img = new Image();
     style.type = "text/css";
+    canvas.id = "main"; 
     style.innerHTML = "@font-face{font-family: Shojumaru-Regular;src: url(resources/Shojumaru-Regular.ttf);}"+
-    "canvas{position:absolute;left:5;top:5}";
+      "#main{position:absolute;left:5px;top:5px}";
+    joyStick.src =  "resources/joyStick.png"; 
     startScreen.src = "resources/Logo.jpg";
     endScreen.src = "resources/end.jpg";
     spriteSheet.src = "resources/spriteSheet.png";
@@ -52,13 +64,26 @@ function begin(){
   document.querySelector("head").appendChild(style);
   body = document.querySelector("body");
   body.appendChild(canvas);
+  body.appendChild(joyCanvas);
   if(window.innerWidth>window.innerHeight){
     canvas.height = window.innerHeight-8;
     canvas.width = 640*(canvas.height/480)-8;
+    joyCanvas.height = canvas.height;
+    joyCanvas.width = 200*(canvas.height/480);
+    joyCanvas.style.position =  "absolute";
+    joyCanvas.style.left = canvas.width+5+"px";
+    joyCanvas.style.top = 5+"px";
+    joyPos = "width";
   }
   else{
     canvas.width = window.innerWidth-8;
     canvas.height = 480*(canvas.width/640)-8;
+    joyCanvas.width = canvas.width;
+    joyCanvas.height = 200*(canvas.width/640);
+    joyCanvas.style.position = "absolute";
+    joyCanvas.style.left = 5+"px";
+    joyCanvas.style.top = canvas.height+5+"px";
+    joyPos = "height";
   }
   scaledWidth = canvas.width/640;
   scaledHeight = canvas.height/480;
@@ -73,9 +98,12 @@ function begin(){
   maze.push(mazeBuffer[0].shift());
   //spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
+  drawJoyStick();
   document.addEventListener("keydown",keyDownEv,true);
-  document.addEventListener("click",touchDown,true);
-  document.addEventListener("touchmove",touchMove,true);
+  canvas.addEventListener("click",touchDown,true);
+  joyCanvas.addEventListener("touchstart",touchStart,true);
+  joyCanvas.addEventListener("touchend",touchEnd,true);
+  joyCanvas.addEventListener("touchmove",touchMove,true);
   //interval = setInterval(game,1000/60);
 }
 function game(){
@@ -154,4 +182,24 @@ function getFPS(){
   ctx.fillStyle = "#000000";
   ctx.font = 15*scaledWidth+"px Verdana";
   ctx.fillText(fps,(200*scaledWidth)-translate,35*scaledHeight);
+}
+function drawJoyStick(x,y){
+  var x = x?x:0;
+  var y = y?y:0;
+  joyCtx.clearRect(0,0,joyCanvas.width,joyCanvas.height);
+  if(joyPos=="height"){
+    formula = (joyCanvas.height-(joyCanvas.height/(joySpriteHeight/216)))/2;
+    knobX = (joyCanvas.width-joyCanvas.height)+formula+x;
+    knobY = formula+y;
+    knobWidth = joyCanvas.height/(joySpriteHeight/216);
+    joyCtx.drawImage(joyStick,0,0,joySpriteWidth,joySpriteHeight,joyCanvas.width-joyCanvas.height,0,joyCanvas.height,joyCanvas.height);
+  }
+  else{
+    var formula = (joyCanvas.width-(joyCanvas.width/(joySpriteWidth/216)))/2;
+    knobX = formula+x;
+    knobY = (joyCanvas.height-joyCanvas.width)+formula+y;
+    knobWidth = joyCanvas.width/(joySpriteWidth/216);
+    joyCtx.drawImage(joyStick,0,0,joySpriteWidth,joySpriteHeight,0,joyCanvas.height-joyCanvas.width,joyCanvas.width,joyCanvas.width);  
+  }
+  joyCtx.drawImage(joyStick,0,joySpriteHeight*5,216,216,knobX,knobY,knobWidth,knobWidth);
 }
