@@ -24,6 +24,10 @@ var body,
     knobX,
     knobY,
     knobWidth,
+    knobStartX,
+    knobStartY,
+    relX,
+    relY,
     knobSelected = false,
     hero,
     timerClock = 0,
@@ -99,6 +103,8 @@ function begin(){
   //spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   drawJoyStick();
+  knobStartX = knobX;
+  knobStartY = knobY;
   document.addEventListener("keydown",keyDownEv,true);
   canvas.addEventListener("click",touchDown,true);
   joyCanvas.addEventListener("touchstart",touchStart,true);
@@ -182,24 +188,4 @@ function getFPS(){
   ctx.fillStyle = "#000000";
   ctx.font = 15*scaledWidth+"px Verdana";
   ctx.fillText(fps,(200*scaledWidth)-translate,35*scaledHeight);
-}
-function drawJoyStick(x,y){
-  var x = x?x:0;
-  var y = y?y:0;
-  joyCtx.clearRect(0,0,joyCanvas.width,joyCanvas.height);
-  if(joyPos=="height"){
-    formula = (joyCanvas.height-(joyCanvas.height/(joySpriteHeight/216)))/2;
-    knobX = (joyCanvas.width-joyCanvas.height)+formula+x;
-    knobY = formula+y;
-    knobWidth = joyCanvas.height/(joySpriteHeight/216);
-    joyCtx.drawImage(joyStick,0,0,joySpriteWidth,joySpriteHeight,joyCanvas.width-joyCanvas.height,0,joyCanvas.height,joyCanvas.height);
-  }
-  else{
-    var formula = (joyCanvas.width-(joyCanvas.width/(joySpriteWidth/216)))/2;
-    knobX = formula+x;
-    knobY = (joyCanvas.height-joyCanvas.width)+formula+y;
-    knobWidth = joyCanvas.width/(joySpriteWidth/216);
-    joyCtx.drawImage(joyStick,0,0,joySpriteWidth,joySpriteHeight,0,joyCanvas.height-joyCanvas.width,joyCanvas.width,joyCanvas.width);  
-  }
-  joyCtx.drawImage(joyStick,0,joySpriteHeight*5,216,216,knobX,knobY,knobWidth,knobWidth);
 }
