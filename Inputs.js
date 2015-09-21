@@ -86,13 +86,15 @@ function touchMove(e){
   }
 }
 function drawJoyStick(x,y){
+  var joyStickTreshold_MAX = 40*scaledWidth;
+  var joyStickTreshold = 30*scaledWidth;
   joyCtx.clearRect(0,0,joyCanvas.width,joyCanvas.height);
   if(x&&y){
-    if(knobStartX-x>30*scaledWidth){  //left
-      if(knobStartX-x>40*scaledWidth){
-        x = knobStartX-40*scaledWidth;
+    if(knobStartX-x>joyStickTreshold){  //left
+      if(knobStartX-x>joyStickTreshold_MAX){
+        x = knobStartX-joyStickTreshold_MAX;
       }
-      if(joyStickObj.left==false||knobStartY-y>-40*scaledWidth&&knobStartY-y<40*scaledWidth){
+      if(joyStickObj.left==false||knobStartY-y>-joyStickTreshold_MAX&&knobStartY-y<joyStickTreshold_MAX){
         hero.movement="left";
         hero.dir==2&&!hero.collisionArray[3].solid?(hero.dir=1,hero.stopped=false):null;
         joyStickObj.left = true;
@@ -101,11 +103,11 @@ function drawJoyStick(x,y){
     else{
       joyStickObj.left = false;
     }
-    if(knobStartX-x<-30*scaledWidth){ //Right
-      if(knobStartX-x<-40*scaledWidth){
-        x = knobStartX+40*scaledWidth;
+    if(knobStartX-x<-joyStickTreshold){ //Right
+      if(knobStartX-x<-joyStickTreshold_MAX){
+        x = knobStartX+joyStickTreshold_MAX;
       }
-      if(joyStickObj.right==false||knobStartY-y>-40*scaledWidth&&knobStartY-y<40*scaledWidth){
+      if(joyStickObj.right==false||knobStartY-y>-joyStickTreshold_MAX&&knobStartY-y<joyStickTreshold_MAX){
         hero.movement="right";
         hero.dir==1&&!hero.collisionArray[2].solid?(hero.dir=2,hero.stopped=false):null;
         joyStickObj.right = true;
@@ -114,11 +116,11 @@ function drawJoyStick(x,y){
     else{
       joyStickObj.right = false;
     }
-    if(knobStartY-y>30*scaledWidth){ //Up
-      if(knobStartY-y>40*scaledWidth){
-        y = knobStartY-40*scaledWidth;
+    if(knobStartY-y>joyStickTreshold){ //Up
+      if(knobStartY-y>joyStickTreshold_MAX){
+        y = knobStartY-joyStickTreshold_MAX;
       }
-      if(joyStickObj.up==false||knobStartX-x>-40*scaledWidth&&knobStartX-x<40*scaledWidth){
+      if(joyStickObj.up==false||knobStartX-x>-joyStickTreshold_MAX&&knobStartX-x<joyStickTreshold_MAX){
         hero.movement="up";
         hero.dir==3&&!hero.collisionArray[4].solid?(hero.dir=4,hero.stopped=false):null;
         joyStickObj.up = true;
@@ -127,11 +129,11 @@ function drawJoyStick(x,y){
     else{
       joyStickObj.up = false;
     }
-    if(knobStartY-y<-30*scaledWidth){ //Down
-      if(knobStartY-y<-40*scaledWidth){
-        y = knobStartY+40*scaledWidth;
+    if(knobStartY-y<-joyStickTreshold){ //Down
+      if(knobStartY-y<-joyStickTreshold_MAX){
+        y = knobStartY+joyStickTreshold_MAX;
       }
-      if(joyStickObj.down==false||knobStartX-x>-40*scaledWidth&&knobStartX-x<40*scaledWidth){
+      if(joyStickObj.down==false||knobStartX-x>-joyStickTreshold_MAX&&knobStartX-x<joyStickTreshold_MAX){
         hero.movement="down";
         hero.dir==4&&!hero.collisionArray[1].solid?(hero.dir=3,hero.stopped=false):null;
         joyStickObj.down = true;
@@ -140,9 +142,9 @@ function drawJoyStick(x,y){
     else{
       joyStickObj.down = false;
     }    
-    if(Math.abs(knobStartY-y)==40*scaledWidth&&Math.abs(knobStartX-x)==40*scaledWidth){
+    if(Math.abs(knobStartY-y)==joyStickTreshold_MAX&&Math.abs(knobStartX-x)==joyStickTreshold_MAX){
       switch(~~(((knobStartY-y))+((knobStartX-x)*10))){
-        case ~~((40*scaledWidth)+(10*40*scaledWidth)): //up|left
+        case ~~((joyStickTreshold_MAX)+(10*joyStickTreshold_MAX)): //up|left
           if(hero.collisionArray[3].solid){
             hero.movement = "up";
           }
@@ -150,7 +152,7 @@ function drawJoyStick(x,y){
             hero.movement = "left";
           }
           break;
-        case ~~((-40*scaledWidth)+(10*40*scaledWidth)): //down|left
+        case ~~((-joyStickTreshold_MAX)+(10*joyStickTreshold_MAX)): //down|left
           if(hero.collisionArray[3].solid){
             hero.movement = "down";
           }
@@ -158,7 +160,7 @@ function drawJoyStick(x,y){
             hero.movement = "left";
           }
           break;
-        case ~~((40*scaledWidth)+(-10*40*scaledWidth)): //up|right
+        case ~~((joyStickTreshold_MAX)+(-10*joyStickTreshold_MAX)): //up|right
           if(hero.collisionArray[2].solid){
             hero.movement = "up";
           }
@@ -166,7 +168,7 @@ function drawJoyStick(x,y){
             hero.movement = "right";
           }
           break;
-        case ~~((-40*scaledWidth)+(-10*40*scaledWidth)): //down|right 
+        case ~~((-joyStickTreshold_MAX)+(-10*joyStickTreshold_MAX)): //down|right 
           if(hero.collisionArray[2].solid){
             hero.movement = "down";
           }     
