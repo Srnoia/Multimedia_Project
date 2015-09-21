@@ -50,6 +50,7 @@ function restart(){
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
   startFlag = false;
+  paused  = false;
   interval = setInterval(game,1000/60);
 }
 function spawnWorker(){
@@ -76,10 +77,27 @@ function translatePulse(){
     e.map(function(e,y){
       e.constructor.name=="Rail"?spawnable.push([x*spriteWidth,y*spriteHeight]):null;
       if(x==maze.length-1&&e.constructor.name=="Rail"){
-        !~~(Math.random()*30)?(entities.push(~~(Math.random()*2)?new Mouse(x*spriteWidth,y*spriteHeight):new Dog(x*spriteWidth,y*spriteHeight)),entities[entities.length-1].rail=e):null
+        if(!~~(Math.random()*dogSpawnChance)){
+          entities.push(new Dog(x*spriteWidth,y*spriteHeight));
+          entities[entities.length-1].rail = e;
+        }
+        else if(!~~(Math.random()*mouseSpawnChance)){
+          entities.push(new Mouse(x*spriteWidth,y*spriteHeight));
+          entities[entities.length-1].rail = e;
+        }
       }
     });
   });
   ctx.translate(-translate,0);
   translate = 0;
+}
+function pauseGame(){
+  paused?interval = setInterval(game,1000/60):(clearInterval(interval),setTimeout(function(){
+  ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2*scaledWidth;
+  ctx.fillText("PAUSED",canvas.width/2-(80*scaledWidth)-translate,canvas.height/2-(10*scaledHeight));
+  ctx.strokeText("PAUSED",canvas.width/2-(80*scaledWidth)-translate,canvas.height/2-(10*scaledHeight));
+  },5));
+  paused = !paused;
 }

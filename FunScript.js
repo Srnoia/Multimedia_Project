@@ -6,7 +6,7 @@ var body,
     style = document.createElement("style"),
     moveObj = {},
     entities = [],
-    maze = Array.apply(null,Array(32)).map(e=>[]),
+    maze = Array.apply(null,Array(32)).map(function(e){return []}),
     score = 0,
     spriteSheet = new Image(),
     backGround = new Image(),
@@ -29,6 +29,7 @@ var body,
     relX,
     relY,
     knobSelected = false,
+    joyStickObj = {right:false,left:false,up:false,down:false},
     hero,
     timerClock = 0,
     timer,
@@ -53,17 +54,32 @@ var body,
     scaledHeight,
     startFlag = true,
     paused = false,
+    dogSpawnChance = 100, // 1 divided by this number is the chance a dog spawns on any new open block
+    mouseSpawnChance = 75, // same as above except it requires a dog not to spawn
     img = new Image();
     style.type = "text/css";
     canvas.id = "main"; 
     style.innerHTML = "@font-face{font-family: Shojumaru-Regular;src: url(resources/Shojumaru-Regular.ttf);}"+
       "#main{position:absolute;left:5px;top:5px}";
-    joyStick.src =  "resources/joyStick.png"; 
-    startScreen.src = "resources/Logo.jpg";
-    endScreen.src = "resources/end.jpg";
-    spriteSheet.src = "resources/spriteSheet.png";
-    backGround.src = "resources/background.jpg";
 
+function preBegin(){
+  joyStick.src =  "resources/joyStick.png";
+  joyStick.onload = function(){
+    startScreen.src = "resources/Logo.jpg";
+    startScreen.onload = function(){
+      endScreen.src = "resources/end.jpg";
+      endScreen.onload = function(){
+        spriteSheet.src = "resources/spriteSheet.png";
+        spriteSheet.onload = function(){
+          backGround.src = "resources/background.jpg";
+          backGround.onload = function(){
+            begin();
+          }  
+        }  
+      }  
+    }
+  }
+}
 function begin(){
   document.querySelector("head").appendChild(style);
   body = document.querySelector("body");
@@ -146,6 +162,7 @@ function game(){
 function gameEnd(){
   clearInterval(interval);
   startFlag = true;
+  paused = false;
   ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
   setTimeout(function(){
    // lastFrame.src = canvas.toDataURL("png");

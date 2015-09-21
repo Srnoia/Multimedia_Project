@@ -36,8 +36,8 @@ function drawMap(map){
 }
 function generateMap(first){
   var mapPointers = [],
-      mapArray = Array.apply(null,Array(32)).map(e=>Array.apply(null,Array(24)).map(e=>null)),
-      tempMaze = Array.apply(null,Array(32)).map(e=>[]);
+      mapArray = Array.apply(null,Array(32)).map(function(e){return Array.apply(null,Array(24)).map(function(e){return null})}),
+      tempMaze = Array.apply(null,Array(32)).map(function(e){return []});
   if(first){
     mapPointers.push({x:1,y:1});
     mapPointers.push({x:2,y:1});
@@ -59,7 +59,7 @@ function generateMap(first){
       }
     });
   }
-  mapArray[mapArray.length-1] = Array.apply(null,Array(mapArray[1].length)).map(e=>2);
+  mapArray[mapArray.length-1] = Array.apply(null,Array(mapArray[1].length)).map(function(e){return 2});
   for(var i=0;i<mapArray.length-1;i++){
     mapArray[i][0] = 2;
     mapArray[i][mapArray[0].length-1] = 2;
