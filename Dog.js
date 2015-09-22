@@ -8,14 +8,15 @@ function Dog(x,y,dir){
   this.movement = null;
   this.movementObj = {0:null,1:"left",2:"right",3:"up",4:"down",5:null};
   this.rail = null;
-  this.timer = 0;
+  this.timer = 0;  
+  this.chasing = false;  
   this.collisionArray = [];
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Dog.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, (this.chasing?5:1)*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Dog.prototype.move = function(){
   this.timer==20?this.timer=0:null;
@@ -26,11 +27,14 @@ Dog.prototype.move = function(){
     this.dir==3?this.y+=this.speed:null;
     this.dir==4?this.y-=this.speed:null;
   }  
-  if(this.hitBox.centerX<hero.hitBox.centerX+(100*scaledWidth)&&this.hitBox.centerX>hero.hitBox.centerX-(100*scaledWidth)&&
-     this.hitBox.centerY>hero.hitBox.centerY-(100*scaledHeight)&&this.hitBox.centerY<hero.hitBox.centerY+(100*scaledHeight))
+  if(this.hitBox.centerX<hero.hitBox.centerX+dogAggroRange&&this.hitBox.centerX>hero.hitBox.centerX-dogAggroRange&&
+     this.hitBox.centerY>hero.hitBox.centerY-dogAggroRange&&this.hitBox.centerY<hero.hitBox.centerY+dogAggroRange)
   {
     this.chase();   
   }
+  else{
+    this.chasing = false;
+  }  
   this.x<0-spriteWidth-translate?entities.splice(entities.indexOf(this),1):null;
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
   this.y>canvas.height?this.y=0:null;
@@ -58,6 +62,7 @@ Dog.prototype.collision = function(){
   }
 }
 Dog.prototype.chase = function(){
+  this.chasing = true;
   var choices = [];
   if(this.x>hero.x){
     choices.push("left");

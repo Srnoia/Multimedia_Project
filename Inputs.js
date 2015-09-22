@@ -86,8 +86,6 @@ function touchMove(e){
   }
 }
 function drawJoyStick(x,y){
-  var joyStickTreshold_MAX = 40*scaledWidth;
-  var joyStickTreshold = 30*scaledWidth;
   joyCtx.clearRect(0,0,joyCanvas.width,joyCanvas.height);
   if(x&&y){
     if(knobStartX-x>joyStickTreshold){  //left
@@ -141,43 +139,7 @@ function drawJoyStick(x,y){
     }
     else{
       joyStickObj.down = false;
-    }    
-    if(Math.abs(knobStartY-y)==joyStickTreshold_MAX&&Math.abs(knobStartX-x)==joyStickTreshold_MAX){
-      switch(~~(((knobStartY-y))+((knobStartX-x)*10))){
-        case ~~((joyStickTreshold_MAX)+(10*joyStickTreshold_MAX)): //up|left
-          if(hero.collisionArray[3].solid){
-            hero.movement = "up";
-          }
-          if(hero.collisionArray[4].solid){
-            hero.movement = "left";
-          }
-          break;
-        case ~~((-joyStickTreshold_MAX)+(10*joyStickTreshold_MAX)): //down|left
-          if(hero.collisionArray[3].solid){
-            hero.movement = "down";
-          }
-          if(hero.collisionArray[1].solid){
-            hero.movement = "left";
-          }
-          break;
-        case ~~((joyStickTreshold_MAX)+(-10*joyStickTreshold_MAX)): //up|right
-          if(hero.collisionArray[2].solid){
-            hero.movement = "up";
-          }
-          if(hero.collisionArray[4].solid){
-            hero.movement = "right";
-          }
-          break;
-        case ~~((-joyStickTreshold_MAX)+(-10*joyStickTreshold_MAX)): //down|right 
-          if(hero.collisionArray[2].solid){
-            hero.movement = "down";
-          }     
-          if(hero.collisionArray[1].solid){
-            hero.movement = "right";
-          }
-          break;
-      }
-    }
+    }   
   }
   if(joyPos=="height"){
     formula = (joyCanvas.height-(joyCanvas.height/(joySpriteHeight/216)))/2;
@@ -193,5 +155,7 @@ function drawJoyStick(x,y){
     knobWidth = joyCanvas.width/(joySpriteWidth/216);
     joyCtx.drawImage(joyStick,0,0,joySpriteWidth,joySpriteHeight,0,joyCanvas.height-joyCanvas.width,joyCanvas.width,joyCanvas.width);  
   }
+  joyStickX = x?x:undefined;
+  joyStickY = y?y:undefined; 
   joyCtx.drawImage(joyStick,0,joySpriteHeight,216,216,knobX,knobY,knobWidth,knobWidth);
 }

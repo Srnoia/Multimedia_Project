@@ -30,6 +30,10 @@ var body,
     relY,
     knobSelected = false,
     joyStickObj = {right:false,left:false,up:false,down:false},
+    joyStickX,
+    joyStickY,
+    joyStickTreshold_MAX,
+    joyStickTreshold,                
     hero,
     timerClock = 0,
     timer,
@@ -54,6 +58,7 @@ var body,
     scaledHeight,
     startFlag = true,
     paused = false,
+    dogAggroRange,
     dogSpawnChance = 100, // 1 divided by this number is the chance a dog spawns on any new open block
     mouseSpawnChance = 75, // same as above except it requires a dog not to spawn
     img = new Image();
@@ -116,11 +121,14 @@ function begin(){
   mazeBuffer[0] = generateMap();
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
+  dogAggroRange = 4*spriteWidth;
   //spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
+  joyStickTreshold_MAX = 40*scaledWidth,
+  joyStickTreshold = 30*scaledWidth,
   drawJoyStick();
   knobStartX = knobX;
-  knobStartY = knobY;
+  knobStartY = knobY;    
   document.addEventListener("keydown",keyDownEv,true);
   canvas.addEventListener("click",touchDown,true);
   joyCanvas.addEventListener("touchstart",touchStart,true);
@@ -129,7 +137,7 @@ function begin(){
   //interval = setInterval(game,1000/60);
 }
 function game(){
-  //var startTime = new Date(); // Acceptable times are below 10
+  //var startTime = new Date(); // Acceptable times are below 10      
   translate+=scrollSpeed;
   ctx.translate(scrollSpeed,0); 
   transWidth = canvas.width-translate;
