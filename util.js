@@ -35,11 +35,22 @@ function replay(){
   },1000/60);
 }
 function restart(){
-  clearInterval(interval);
+  //clearInterval(interval);
+  var keys = Object.keys(powerUps);
+  keys.forEach(function(e){
+    powerUps[e].active = false;
+    powerUps[e].timer = null;
+  });
+  scrollSpeed = -0.5*scaledWidth;
+  dogSpawnChance = 100;
+  mouseSpawnChance = 75;
   spawnable = [];
   entities = [];
   mazeBuffer = [];
+  timeouts = [];
+  activePowerUp = null;
   hero = null;
+  frames = 0;
   //maze = Array.apply(null,Array(32)).map(e=>[]);
   maze = generateMap(true);
   entities.push(new Hero(spriteWidth*10,spriteHeight*10));
@@ -51,7 +62,10 @@ function restart(){
   maze.push(mazeBuffer[0].shift());
   startFlag = false;
   paused  = false;
-  interval = setInterval(game,1000/60);
+  //interval = setInterval(game,1000/60);
+  gameIsRunning = true;
+  cancelAnimationFrame(animationID);
+  requestAnimationFrame(game);
 }
 function spawnWorker(){
   if(typeof Worker!="undefined"){
@@ -63,20 +77,26 @@ function spawnWorker(){
   }
 }
 function translatePulse(){
-  entities.forEach(function(e){
+  entities.forEach(function(e,i){
     e.x -= spriteWidth;
   });
   maze.shift();
   if(!mazeBuffer[0].length){
     mazeBuffer.shift();
     mazeBuffer.push(generateMap());
+    if(Math.abs(scrollSpeed)<hero.initialSpeed-(0.5*scaledWidth)){scrollSpeed -= 0.1*scaledWidth;}
+    if(dogSpawnChance>50){dogSpawnChance-=5;}
+    if(mouseSpawnChance>40){mouseSpawnChance-=5;}
   }
   maze.push(mazeBuffer[0].shift());
   spawnable = [];
-  maze.forEach(function(e,x){ 
-    e.map(function(e,y){
-      e.constructor.name=="Rail"?spawnable.push([x*spriteWidth,y*spriteHeight]):null;
+  maze.forEach(function(e,x){
+    e.forEach(function(e,y){
+     // e.constructor.name=="Rail"?spawnable.push([x*spriteWidth,y*spriteHeight]):null;               
       if(x==maze.length-1&&e.constructor.name=="Rail"){
+        if(!~~(Math.random()*powerUpSpawnChance)){
+          timeouts.push(new Timeout(~~(Math.random()*canvas.width/Math.abs(scrollSpeed)-1),e.setPowerUp,powerUps[Object.keys(powerUps)[~~(Math.random()*Object.keys(powerUps).length)]].name,e));
+        }
         if(!~~(Math.random()*dogSpawnChance)){
           entities.push(new Dog(x*spriteWidth,y*spriteHeight));
           entities[entities.length-1].rail = e;
@@ -88,16 +108,40 @@ function translatePulse(){
       }
     });
   });
+  powerUps.catnip.fadeArray.forEach(function(e){
+    e.x -= spriteWidth;
+  });
   ctx.translate(-translate,0);
   translate = 0;
 }
 function pauseGame(){
-  paused?interval = setInterval(game,1000/60):(clearInterval(interval),setTimeout(function(){
+  paused?interval = (gameIsRunning=true,requestAnimationFrame(game)):(cancelAnimationFrame(animationID),gameIsRunning = false,setTimeout(function(){
   ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
   ctx.strokeStyle = "white";
   ctx.lineWidth = 2*scaledWidth;
   ctx.fillText("PAUSED",canvas.width/2-(80*scaledWidth)-translate,canvas.height/2-(10*scaledHeight));
   ctx.strokeText("PAUSED",canvas.width/2-(80*scaledWidth)-translate,canvas.height/2-(10*scaledHeight));
-  },5));
+  },15));
   paused = !paused;
+}
+
+function Timeout(delay,callback,args,caller){
+  this.delay = delay;
+  this. callback = callback;
+  this.args = args;
+  this.caller = caller;
+  this.tick = function(){
+    this.delay--;
+    if(this.delay<=0){
+      if(timeouts.indexOf(this)>-1){
+        timeouts.splice(timeouts.indexOf(this),1);
+      }
+      this.callback.call(this.caller,this.args);
+    }
+  }
+  this.clear = function(){
+    if(timeouts.indexOf(this)>-1){
+      timeouts.splice(timeouts.indexOf(this),1);
+    }
+  }
 }

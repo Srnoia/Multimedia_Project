@@ -33,6 +33,8 @@ function keyDownEv(e){
       restart();
       break;
     case 32: // Space
+    case 27: // Esc
+    case 80: // P
       e.preventDefault();
       if(!startFlag){
         pauseGame();
@@ -92,7 +94,7 @@ function drawJoyStick(x,y){
       if(knobStartX-x>joyStickTreshold_MAX){
         x = knobStartX-joyStickTreshold_MAX;
       }
-      if(joyStickObj.left==false||knobStartY-y>-joyStickTreshold_MAX&&knobStartY-y<joyStickTreshold_MAX){
+      if(joyStickObj.left==false||knobStartY-y>-joyStickTreshold&&knobStartY-y<joyStickTreshold){
         hero.movement="left";
         hero.dir==2&&!hero.collisionArray[3].solid?(hero.dir=1,hero.stopped=false):null;
         joyStickObj.left = true;
@@ -105,7 +107,7 @@ function drawJoyStick(x,y){
       if(knobStartX-x<-joyStickTreshold_MAX){
         x = knobStartX+joyStickTreshold_MAX;
       }
-      if(joyStickObj.right==false||knobStartY-y>-joyStickTreshold_MAX&&knobStartY-y<joyStickTreshold_MAX){
+      if(joyStickObj.right==false||knobStartY-y>-joyStickTreshold&&knobStartY-y<joyStickTreshold){
         hero.movement="right";
         hero.dir==1&&!hero.collisionArray[2].solid?(hero.dir=2,hero.stopped=false):null;
         joyStickObj.right = true;
@@ -118,7 +120,7 @@ function drawJoyStick(x,y){
       if(knobStartY-y>joyStickTreshold_MAX){
         y = knobStartY-joyStickTreshold_MAX;
       }
-      if(joyStickObj.up==false||knobStartX-x>-joyStickTreshold_MAX&&knobStartX-x<joyStickTreshold_MAX){
+      if(joyStickObj.up==false||knobStartX-x>-joyStickTreshold&&knobStartX-x<joyStickTreshold){
         hero.movement="up";
         hero.dir==3&&!hero.collisionArray[4].solid?(hero.dir=4,hero.stopped=false):null;
         joyStickObj.up = true;
@@ -131,7 +133,7 @@ function drawJoyStick(x,y){
       if(knobStartY-y<-joyStickTreshold_MAX){
         y = knobStartY+joyStickTreshold_MAX;
       }
-      if(joyStickObj.down==false||knobStartX-x>-joyStickTreshold_MAX&&knobStartX-x<joyStickTreshold_MAX){
+      if(joyStickObj.down==false||knobStartX-x>-joyStickTreshold&&knobStartX-x<joyStickTreshold){
         hero.movement="down";
         hero.dir==4&&!hero.collisionArray[1].solid?(hero.dir=3,hero.stopped=false):null;
         joyStickObj.down = true;

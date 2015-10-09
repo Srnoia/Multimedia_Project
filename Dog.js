@@ -2,7 +2,9 @@ function Dog(x,y,dir){
   this.type = "dog";
   this.x = x;
   this.y = y;
+  this.spriteY = 1;
   this.speed = 1*scaledWidth;
+  this.initialSpeed = this.speed;
   this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;
@@ -10,13 +12,14 @@ function Dog(x,y,dir){
   this.rail = null;
   this.timer = 0;  
   this.chasing = false;  
+  this.retreating = false;
   this.collisionArray = [];
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Dog.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, (this.chasing?5:1)*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Dog.prototype.move = function(){
   this.timer==20?this.timer=0:null;
@@ -26,14 +29,38 @@ Dog.prototype.move = function(){
     this.dir==2?this.x+=this.speed:null;
     this.dir==3?this.y+=this.speed:null;
     this.dir==4?this.y-=this.speed:null;
-  }  
-  if(this.hitBox.centerX<hero.hitBox.centerX+dogAggroRange&&this.hitBox.centerX>hero.hitBox.centerX-dogAggroRange&&
-     this.hitBox.centerY>hero.hitBox.centerY-dogAggroRange&&this.hitBox.centerY<hero.hitBox.centerY+dogAggroRange)
+  }
+  if(powerUps.radioActive.active&&this.hitBox.centerX<hero.hitBox.centerX+powerUps.radioActive.repelRadius&&
+     this.hitBox.centerX>hero.hitBox.centerX-powerUps.radioActive.repelRadius&&
+     this.hitBox.centerY>hero.hitBox.centerY-powerUps.radioActive.repelRadius&&
+     this.hitBox.centerY<hero.hitBox.centerY+powerUps.radioActive.repelRadius)
   {
-    this.chase();   
+    this.retreat();
+    this.speed = this.initialSpeed-0.5*scaledWidth;
+    this.chasing = false;
+  }  
+  else if(this.hitBox.centerX<hero.hitBox.centerX+dogAggroRange&&this.hitBox.centerX>hero.hitBox.centerX-dogAggroRange&&
+     this.hitBox.centerY>hero.hitBox.centerY-dogAggroRange&&this.hitBox.centerY<hero.hitBox.centerY+dogAggroRange||
+     powerUps.sausage.active)
+  {
+    this.chase();
+    this.speed = this.initialSpeed;
+    this.retreating = false;   
   }
   else{
+    this.speed = this.initialSpeed;
     this.chasing = false;
+    this.retreating = false;
+  }
+  //Check the sprite Y
+  if(this.chasing){
+    this.spriteY = 5;
+  }
+  else if(this.retreating){
+    this.spriteY = 6;
+  }
+  else{
+    this.spriteY = 1;
   }  
   this.x<0-spriteWidth-translate?entities.splice(entities.indexOf(this),1):null;
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
@@ -58,23 +85,50 @@ Dog.prototype.collision = function(){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
-    gameEnd();   
+    if(powerUps.radioActive.active){
+      entities.splice(entities.indexOf(this),1);
+      score++;
+    }
+    else if(powerUps.shield.active){
+      entities.splice(entities.indexOf(this),1);
+    }
+    else{
+      gameEnd();
+    }   
   }
 }
 Dog.prototype.chase = function(){
   this.chasing = true;
   var choices = [];
-  if(this.x>hero.x){
+  if(this.x>=hero.x){
     choices.push("left");
   }  
-  else if(this.x<hero.x){
+  else if(this.x<=hero.x){
     choices.push("right");
   }
-  if(this.y>hero.y){
+  if(this.y>=hero.y){
     choices.push("up");
   }
-  else if(this.y<hero.y){
+  else if(this.y<=hero.y){
     choices.push("down");
+  }
+  this.movement = choices[~~(Math.random()*choices.length)];
+}
+
+Dog.prototype.retreat = function(){
+  this.retreating = true;
+  var choices = [];
+  if(this.x>=hero.x){
+    choices.push("right");
+  }  
+  else if(this.x<=hero.x){
+    choices.push("left");
+  }
+  if(this.y>=hero.y){
+    choices.push("down");
+  }
+  else if(this.y<=hero.y){
+    choices.push("up");
   }
   this.movement = choices[~~(Math.random()*choices.length)];
 }

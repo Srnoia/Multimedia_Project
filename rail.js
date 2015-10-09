@@ -4,6 +4,7 @@ function Rail(x,y,type){
   this.collisionArray = [];
   this.solid = false;
   this.type = type|0;
+  this.powerUp;
   this.hitBox = {left:this.x,right:this.x+spriteWidth,top:this.y,bottom:this.y+spriteHeight}
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
@@ -20,7 +21,13 @@ Rail.prototype.draw = function(x){
   this.collisionArray[1] = maze[this.tileIndexX][this.tileIndexY+1]?maze[this.tileIndexX][this.tileIndexY+1]:maze[this.tileIndexX][0]; //DOWN
   this.collisionArray[2] = maze[this.tileIndexX+1]?maze[this.tileIndexX+1][this.tileIndexY]:maze[0][this.tileIndexY]; //RIGHT
   this.collisionArray[3] = maze[this.tileIndexX-1]?maze[this.tileIndexX-1][this.tileIndexY]:maze[maze.length-1][this.tileIndexY]; //LEFT 
+  if(this.powerUp){
+    ctx.drawImage(powerUpBox,this.x,this.y,spriteWidth,spriteHeight);
+  }
   return false;
+}
+Rail.prototype.setPowerUp = function(powerup){
+  this.powerUp = powerup;
 }
 Rail.prototype.initCollision = function(){
   this.collisionArray[0] = maze[this.tileIndexX][this.tileIndexY-1]?maze[this.tileIndexX][this.tileIndexY-1]:maze[this.tileIndexX][maze[this.tileIndexX].length-1]; //UP

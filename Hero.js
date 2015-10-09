@@ -2,18 +2,21 @@ function Hero(x,y,dir){
   this.type = "hero";
   this.x = x;
   this.y = y;
+  this.spriteY = 2;
   this.speed = 2*scaledWidth;
+  this.initialSpeed = 2*scaledWidth;
   this.dir = dir?dir:0;
   this.stopped = true;
   this.movement = null;
   this.rail = null;
+  this.shield = null;
   this.collisionArray = [];
   this.hitBox = {top:this.y+(2.5*scaledHeight),left:this.x+(2.5*scaledWidth),bottom:this.y+spriteHeight-(2.5*scaledHeight),right:this.x+spriteWidth-(2.5*scaledWidth)};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Hero.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, 2*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Hero.prototype.move = function(){
   if(!this.stopped){
@@ -21,7 +24,11 @@ Hero.prototype.move = function(){
     this.dir==2?this.x+=this.speed:null;
     this.dir==3?this.y+=this.speed:null;
     this.dir==4?this.y-=this.speed:null;
-  }   
+  }
+  if(this.rail&&this.rail.powerUp){
+    handlePowerUp(this.rail.powerUp);
+    this.rail.powerUp = null;
+  }
   this.x<0-spriteWidth-translate?gameEnd():null;
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
   this.y>canvas.height?this.y=0:null;
@@ -44,7 +51,7 @@ Hero.prototype.collision = function(){
   for(var i=0;i<this.collisionArray.length-1;i++){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }                  
-  if(joyStickX&&joyStickY){
+  if(joyStickX&&joyStickY&&hero.stopped){
     if(Math.abs(knobStartY-joyStickY)==joyStickTreshold_MAX&&Math.abs(knobStartX-joyStickX)==joyStickTreshold_MAX){
       switch(~~(((knobStartY-joyStickY))+((knobStartX-joyStickX)*10))){
         case ~~((joyStickTreshold_MAX)+(10*joyStickTreshold_MAX)): //up|left
@@ -53,7 +60,7 @@ Hero.prototype.collision = function(){
           }
           if(hero.collisionArray[4].solid){
             hero.movement = "left";
-          }
+          }                                                              
           break;
         case ~~((-joyStickTreshold_MAX)+(10*joyStickTreshold_MAX)): //down|left
           if(hero.collisionArray[3].solid){
@@ -61,7 +68,7 @@ Hero.prototype.collision = function(){
           }
           if(hero.collisionArray[1].solid){
             hero.movement = "left";
-          }
+          }                                                     
           break;
         case ~~((joyStickTreshold_MAX)+(-10*joyStickTreshold_MAX)): //up|right
           if(hero.collisionArray[2].solid){
@@ -69,7 +76,7 @@ Hero.prototype.collision = function(){
           }
           if(hero.collisionArray[4].solid){
             hero.movement = "right";
-          }
+          }                       
           break;
         case ~~((-joyStickTreshold_MAX)+(-10*joyStickTreshold_MAX)): //down|right 
           if(hero.collisionArray[2].solid){
@@ -77,7 +84,7 @@ Hero.prototype.collision = function(){
           }     
           if(hero.collisionArray[1].solid){
             hero.movement = "right";
-          }
+          }                       
           break;
       }
     } 

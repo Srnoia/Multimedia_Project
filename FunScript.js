@@ -13,7 +13,8 @@ var body,
     endScreen = new Image(),
     startScreen = new Image(),
     lastFrame = new Image(),
-    joyStick = new Image(),
+    joyStick = new Image(),    
+    powerUpBox = new Image(),    
     spriteHeight = 20,
     spriteWidth = 20,
     spriteScreenHeight = 200,
@@ -50,7 +51,7 @@ var body,
     scale,
     curImage = 0,
     timeout,
-    scrollSpeed = -0.5,
+    scrollSpeed = -1.0,
     translate = 0,
     mazeBuffer = [],
     transWidth,
@@ -59,6 +60,13 @@ var body,
     startFlag = true,
     paused = false,
     dogAggroRange,
+    backGroundPNG,
+    frames,
+    gameIsRunning = false,
+    animationID = null,
+    timeouts = [],
+    powerUpSpawnChance = 200,
+    activePowerUp,
     dogSpawnChance = 100, // 1 divided by this number is the chance a dog spawns on any new open block
     mouseSpawnChance = 75, // same as above except it requires a dog not to spawn
     img = new Image();
@@ -71,30 +79,31 @@ function preBegin(){
   joyStick.src =  "resources/joyStick.png";
   joyStick.onload = function(){
     startScreen.src = "resources/Logo.jpg";
+    endScreen.src = "resources/end.jpg";
+    spriteSheet.src = "resources/spriteSheet.png";
+    backGround.src = "resources/background.jpg";     
+    powerUpBox.src = "resources/powerUpBox.png";    
     startScreen.onload = function(){
-      endScreen.src = "resources/end.jpg";
-      endScreen.onload = function(){
-        spriteSheet.src = "resources/spriteSheet.png";
-        spriteSheet.onload = function(){
-          backGround.src = "resources/background.jpg";
-          backGround.onload = function(){
-            begin();
-          }  
-        }  
-      }  
+      begin();  
     }
-  }
+    endScreen.onload = function(){
+      canvas.style.backgroundImage = "url('"+endScreen.src+"')";
+      canvas.style.backgroundRepeat = "no-repeat";
+      canvas.style.backgroundSize = "100%";
+    }
+  }      
 }
 function begin(){
   document.querySelector("head").appendChild(style);
   body = document.querySelector("body");
   body.appendChild(canvas);
   body.appendChild(joyCanvas);
+  body.style.fontFamily = "Shojumaru-Regular";
   if(window.innerWidth>window.innerHeight){
     canvas.height = window.innerHeight-8;
     canvas.width = 640*(canvas.height/480)-8;
     joyCanvas.height = canvas.height;
-    joyCanvas.width = 200*(canvas.height/480);
+    joyCanvas.width = 200*(canvas.height/640);
     joyCanvas.style.position =  "absolute";
     joyCanvas.style.left = canvas.width+5+"px";
     joyCanvas.style.top = 5+"px";
@@ -115,6 +124,8 @@ function begin(){
   spriteWidth = canvas.width/32;
   spriteHeight = canvas.height/24;
   scrollSpeed = -0.5*scaledWidth;
+  canvas.style.backgroundWidth = canvas.width;
+  canvas.style.backgroundHeight = canvas.height;
   //getFile("resources/levels.txt");
   //drawMap(mapData);
   maze = generateMap(true);
@@ -122,6 +133,7 @@ function begin(){
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
   dogAggroRange = 4*spriteWidth;
+  powerUps.radioActive.repelRadius = 6*spriteWidth;
   //spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   joyStickTreshold_MAX = 40*scaledWidth,
@@ -133,15 +145,15 @@ function begin(){
   canvas.addEventListener("click",touchDown,true);
   joyCanvas.addEventListener("touchstart",touchStart,true);
   joyCanvas.addEventListener("touchend",touchEnd,true);
-  joyCanvas.addEventListener("touchmove",touchMove,true);
+  joyCanvas.addEventListener("touchmove",touchMove,true); 
   //interval = setInterval(game,1000/60);
 }
-function game(){
-  //var startTime = new Date(); // Acceptable times are below 10      
+function game(){    
+ // var startTime = new Date(); // Acceptable times are below 10      
   translate+=scrollSpeed;
   ctx.translate(scrollSpeed,0); 
   transWidth = canvas.width-translate;
-  ctx.clearRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
+ // ctx.clearRect(0,0,transWidth+spriteWidth,canvas.height+spriteHeight);
   ctx.fillStyle = "#1122FF";
   ctx.drawImage(backGround, 0-translate, 0, canvas.width, canvas.height);
   ctx.font = 15*scaledWidth+"px Verdana";
@@ -153,22 +165,34 @@ function game(){
       elem.draw(x*spriteWidth);      
     })
   });
-  entities.forEach(function(e){
+  entities.forEach(function(e){  
     e.move();
     e.collision();
-    e.draw();
+    e.draw();                                        
   });
   if(-translate>=spriteWidth){
     translatePulse();
   }
-  ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
+  timeouts.forEach(function(e){
+    e.tick();
+  });
+  for(var i in powerUps){
+    if(powerUps[i].timer){
+      powerUps[i].timer.tick();
+    }
+  }
+ // ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
   //worker.postMessage(entities);
   getFPS();
-  //var endTime = new Date();
-  //console.log(endTime.getTime()-startTime.getTime());
+ // var endTime = new Date();
+ // console.log(endTime.getTime()-startTime.getTime());
+  if(gameIsRunning){
+    animationID = requestAnimationFrame(game);
+  } 
 }
 function gameEnd(){
-  clearInterval(interval);
+  //clearInterval(interval);
+  gameIsRunning = false;
   startFlag = true;
   paused = false;
   ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
@@ -178,12 +202,18 @@ function gameEnd(){
     ctx.translate(-translate,0);
     translate = 0;
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.drawImage(endScreen,0,0,canvas.width,canvas.height);
     ctx.font = 36*scaledWidth+"px Shojumaru-Regular";    
     ctx.strokeStyle = "white";
     ctx.lineWidth = 2*scaledWidth;
-    ctx.fillText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,185*scaledHeight);
-    ctx.strokeText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,185*scaledHeight);
+    ctx.fillText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,170*scaledHeight);
+    ctx.strokeText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,170*scaledHeight);
+ /*   [].forEach.call(lastFrame.data,function(e,i){
+      if(i%4==0){
+        if(lastFrame.data[i]==0&&lastFrame.data[i+1]==0&&lastFrame.data[i+2]==0){
+          lastFrame.data[i+3] = 0;
+        }
+      }
+    });       */
     ctx.putImageData(lastFrame,313.3*scaledWidth,23.3*scaledHeight);
     paused = false; // was causing game interval to be set twice if you hit spacebar within second of you death
    // setTimeout(function(){ctx.drawImage(lastFrame,canvas.width/2,0,canvas.width/1.2,canvas.height/1.2);},0);

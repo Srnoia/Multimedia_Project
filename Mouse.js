@@ -2,8 +2,12 @@ function Mouse(x,y,dir){
   this.type = "mouse";
   this.x = x;
   this.y = y;
+  this.spriteY = 0;
   this.speed = 2*scaledWidth;
+  this.initialSpeed = this.speed;
   this.dir = dir?dir:0;
+  this.chasing = false;
+  this.retreating = false;
   this.stopped = true;
   this.movement = null;
   this.movementObj = {0:null,1:"left",2:"right",3:"up",4:"down",5:null};
@@ -15,7 +19,7 @@ function Mouse(x,y,dir){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Mouse.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, 0, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Mouse.prototype.move = function(){
   this.timer==15?this.timer=0:null;
@@ -25,6 +29,35 @@ Mouse.prototype.move = function(){
     this.dir==2?this.x+=this.speed:null;
     this.dir==3?this.y+=this.speed:null;
     this.dir==4?this.y-=this.speed:null;
+  }
+  if(powerUps.radioActive.active&&this.hitBox.centerX<hero.hitBox.centerX+powerUps.radioActive.repelRadius&&
+     this.hitBox.centerX>hero.hitBox.centerX-powerUps.radioActive.repelRadius&&
+     this.hitBox.centerY>hero.hitBox.centerY-powerUps.radioActive.repelRadius&&
+     this.hitBox.centerY<hero.hitBox.centerY+powerUps.radioActive.repelRadius)
+  {
+    this.retreat();
+    this.speed = this.initialSpeed - 1*scaledWidth;
+    this.chasing = false;
+  }
+  else if(powerUps.cheese.active){
+    this.chase();
+    this.speed = this.initialSpeed;
+    this.retreating = false;   
+  }
+  else{
+    this.speed = this.initialSpeed;
+    this.chasing = false;
+    this.retreating = false;
+  }
+  //Check the sprite Y
+  if(this.chasing){
+    this.spriteY = 9;
+  }
+  else if(this.retreating){
+    this.spriteY = 8;
+  }
+  else{
+    this.spriteY = 0;
   }
   this.x<0-spriteWidth-translate?entities.splice(entities.indexOf(this),1):null;
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
@@ -56,4 +89,40 @@ Mouse.prototype.collision = function(){
     //entities.push(new Mouse(~~(Math.random()*transWidth),~~(Math.random()*canvas.height)));
     //entities.push(new Dog(~~(Math.random()*transWidth),~~(Math.random()*canvas.height)));
   }
+}
+
+Mouse.prototype.chase = function(){
+  this.chasing = true;
+  var choices = [];
+  if(this.x>=hero.x){
+    choices.push("left");
+  }  
+  else if(this.x<=hero.x){
+    choices.push("right");
+  }
+  if(this.y>=hero.y){
+    choices.push("up");
+  }
+  else if(this.y<=hero.y){
+    choices.push("down");
+  }
+  this.movement = choices[~~(Math.random()*choices.length)];
+}
+
+Mouse.prototype.retreat = function(){
+  this.retreating = true;
+  var choices = [];
+  if(this.x>=hero.x){
+    choices.push("right");
+  }  
+  else if(this.x<=hero.x){
+    choices.push("left");
+  }
+  if(this.y>=hero.y){
+    choices.push("down");
+  }
+  else if(this.y<=hero.y){
+    choices.push("up");
+  }
+  this.movement = choices[~~(Math.random()*choices.length)];
 }
