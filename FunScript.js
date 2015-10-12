@@ -65,6 +65,7 @@ var body,
     gameIsRunning = false,
     animationID = null,
     timeouts = [],
+    effects = [],
     powerUpSpawnChance = 200,
     activePowerUp,
     dogSpawnChance = 100, // 1 divided by this number is the chance a dog spawns on any new open block
@@ -181,6 +182,9 @@ function game(){
       powerUps[i].timer.tick();
     }
   }
+  effects.forEach(function(e){
+    e.tick();
+  });
  // ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
   //worker.postMessage(entities);
   getFPS();

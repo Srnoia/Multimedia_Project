@@ -84,9 +84,9 @@ function translatePulse(){
   if(!mazeBuffer[0].length){
     mazeBuffer.shift();
     mazeBuffer.push(generateMap());
-    if(Math.abs(scrollSpeed)<hero.initialSpeed-(0.5*scaledWidth)){scrollSpeed -= 0.1*scaledWidth;}
-    if(dogSpawnChance>50){dogSpawnChance-=5;}
-    if(mouseSpawnChance>40){mouseSpawnChance-=5;}
+    if(Math.abs(scrollSpeed)<hero.initialSpeed-(1*scaledWidth)){scrollSpeed -= 0.02*scaledWidth;}
+    if(dogSpawnChance>50){dogSpawnChance-=3;}
+    if(mouseSpawnChance>40){mouseSpawnChance-=3;}
   }
   maze.push(mazeBuffer[0].shift());
   spawnable = [];
@@ -108,9 +108,9 @@ function translatePulse(){
       }
     });
   });
-  powerUps.catnip.fadeArray.forEach(function(e){
+  effects.forEach(function(e){
     e.x -= spriteWidth;
-  });
+  })
   ctx.translate(-translate,0);
   translate = 0;
 }

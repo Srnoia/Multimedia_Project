@@ -22,53 +22,58 @@ Dog.prototype.draw = function(){
   ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Dog.prototype.move = function(){
-  this.timer==20?this.timer=0:null;
-  !this.timer?(this.movement = this.movementObj[~~(Math.random()*4)+1],this.timer++):this.timer++;
-  if(!this.stopped){  
-    this.dir==1?this.x-=this.speed:null;
-    this.dir==2?this.x+=this.speed:null;
-    this.dir==3?this.y+=this.speed:null;
-    this.dir==4?this.y-=this.speed:null;
-  }
-  if(powerUps.radioActive.active&&this.hitBox.centerX<hero.hitBox.centerX+powerUps.radioActive.repelRadius&&
-     this.hitBox.centerX>hero.hitBox.centerX-powerUps.radioActive.repelRadius&&
-     this.hitBox.centerY>hero.hitBox.centerY-powerUps.radioActive.repelRadius&&
-     this.hitBox.centerY<hero.hitBox.centerY+powerUps.radioActive.repelRadius)
-  {
-    this.retreat();
-    this.speed = this.initialSpeed-0.5*scaledWidth;
-    this.chasing = false;
-  }  
-  else if(this.hitBox.centerX<hero.hitBox.centerX+dogAggroRange&&this.hitBox.centerX>hero.hitBox.centerX-dogAggroRange&&
-     this.hitBox.centerY>hero.hitBox.centerY-dogAggroRange&&this.hitBox.centerY<hero.hitBox.centerY+dogAggroRange||
-     powerUps.sausage.active)
-  {
-    this.chase();
-    this.speed = this.initialSpeed;
-    this.retreating = false;   
+  if(!powerUps.freeze.active){
+    this.timer==20?this.timer=0:null;
+    !this.timer?(this.movement = this.movementObj[~~(Math.random()*4)+1],this.timer++):this.timer++;
+    if(!this.stopped){  
+      this.dir==1?this.x-=this.speed:null;
+      this.dir==2?this.x+=this.speed:null;
+      this.dir==3?this.y+=this.speed:null;
+      this.dir==4?this.y-=this.speed:null;
+    }
+    if(powerUps.radioActive.active&&this.hitBox.centerX<hero.hitBox.centerX+powerUps.radioActive.repelRadius&&
+       this.hitBox.centerX>hero.hitBox.centerX-powerUps.radioActive.repelRadius&&
+       this.hitBox.centerY>hero.hitBox.centerY-powerUps.radioActive.repelRadius&&
+       this.hitBox.centerY<hero.hitBox.centerY+powerUps.radioActive.repelRadius)
+    {
+      this.retreat();
+      this.speed = this.initialSpeed-0.5*scaledWidth;
+      this.chasing = false;
+    }  
+    else if(this.hitBox.centerX<hero.hitBox.centerX+dogAggroRange&&this.hitBox.centerX>hero.hitBox.centerX-dogAggroRange&&
+       this.hitBox.centerY>hero.hitBox.centerY-dogAggroRange&&this.hitBox.centerY<hero.hitBox.centerY+dogAggroRange||
+       powerUps.sausage.active)
+    {
+      this.chase();
+      this.speed = this.initialSpeed;
+      this.retreating = false;   
+    }
+    else{
+      this.speed = this.initialSpeed;
+      this.chasing = false;
+      this.retreating = false;
+    }
+    //Check the sprite Y
+    if(this.chasing){
+      this.spriteY = 5;
+    }
+    else if(this.retreating){
+      this.spriteY = 6;
+    }
+    else{
+      this.spriteY = 1;
+    }  
   }
   else{
-    this.speed = this.initialSpeed;
-    this.chasing = false;
-    this.retreating = false;
-  }
-  //Check the sprite Y
-  if(this.chasing){
-    this.spriteY = 5;
-  }
-  else if(this.retreating){
-    this.spriteY = 6;
-  }
-  else{
-    this.spriteY = 1;
-  }  
+    this.spriteY = 13;
+  } 
   this.x<0-spriteWidth-translate?entities.splice(entities.indexOf(this),1):null;
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
   this.y>canvas.height?this.y=0:null;
   this.y<0-spriteHeight?this.y=canvas.height:null; 
   this.hitBox = {top:this.y,left:this.x,bottom:this.y+spriteHeight,right:this.x+spriteWidth};
   this.hitBox.centerX = (this.hitBox.left+this.hitBox.right)/2;
-  this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
+  this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2;
 }
 Dog.prototype.collision = function(){
   this.tileIndexX = ~~(this.hitBox.centerX/spriteWidth);
