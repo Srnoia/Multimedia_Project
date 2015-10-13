@@ -141,7 +141,8 @@ function begin(){
   joyStickTreshold = 30*scaledWidth,
   drawJoyStick();
   knobStartX = knobX;
-  knobStartY = knobY;    
+  knobStartY = knobY;
+  setTimeout(drawIcons,0);
   document.addEventListener("keydown",keyDownEv,true);
   canvas.addEventListener("click",touchDown,true);
   joyCanvas.addEventListener("touchstart",touchStart,true);

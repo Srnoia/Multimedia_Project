@@ -4,6 +4,7 @@ var powerUps = {
         name:"catnip",
         description:"Makes you move faster for 15 seconds",
         timer:null,
+        duration:900,
         fadeArray:[],
         icon: {y:11,x:4,width:spriteScreenWidth,height:spriteScreenWidth},
         activate:function(){
@@ -11,7 +12,7 @@ var powerUps = {
           this.fadeArray = [];
           hero.speed = hero.initialSpeed+1*scaledWidth;
           this.timer = null;
-          this.timer = new Timeout(900,function(){hero.speed=hero.initialSpeed;this.active=false;this.timer=null;},null,this);
+          this.timer = new Timeout(this.duration,function(){hero.speed=hero.initialSpeed;this.active=false;this.timer=null;},null,this);
           this.timer.tick = function(){
             this.delay--;
             if(this.delay%4==0){
@@ -31,11 +32,12 @@ var powerUps = {
         name:"sausage",
         description:"Makes all dogs chase you for 15 seconds",
         timer:null,
+        duration:900,
         icon: {y:11,x:2,width:spriteScreenWidth,height:spriteScreenWidth},
         activate:function(){
           this.active = true;
           this.timer = null;
-          this.timer = new Timeout(900,function(){this.active=false;this.timer=null;},null,this);
+          this.timer = new Timeout(this.duration,function(){this.active=false;this.timer=null;},null,this);
         }      
       },
       cheese: {
@@ -43,11 +45,12 @@ var powerUps = {
         name:"cheese",
         description:"Makes all mice chase you for 15 seconds",
         timer:null,
+        duration:900,
         icon: {y:11,x:3,width:spriteScreenWidth,height:spriteScreenWidth},
         activate:function(){
           this.active = true;
           this.timer = null;
-          this.timer = new Timeout(900,function(){this.active=false;this.timer=null;},null,this);
+          this.timer = new Timeout(this.duration,function(){this.active=false;this.timer=null;},null,this);
         } 
       },
       shield: {
@@ -55,16 +58,17 @@ var powerUps = {
         name:"shield",
         description:"Makes you immune to dogs for 15 seconds",
         timer:null,
+        duration:900,
         icon: {y:11,x:1,width:spriteScreenWidth,height:spriteScreenWidth},
         activate:function(){
           this.active = true;
           hero.spriteY = 10;
           this.timer = null;           
-          this.timer = new Timeout(900,function(){this.active=false;this.timer=null;hero.spriteY=2;},null,this);
+          this.timer = {duration:this.duration,delay:this.duration,callback:function(){this.active=false;this.timer=null;hero.spriteY=2;},args:null,caller:this};
           this.timer.tick = function(){
             this.delay--;        
-            if(this.delay>300){}
-            else if(this.delay>100){
+            if(this.delay>this.duration/3){}
+            else if(this.delay>this.duration/9){
               this.delay%30==0?(hero.spriteY==10?hero.spriteY=2:hero.spriteY=10):null;
             }                    
             else if(this.delay>0){
@@ -82,15 +86,16 @@ var powerUps = {
       radioActive: {
         active:false,
         name:"radioActive",
-        description:"Makes mice and dogs run away from you for 15 seconds",
+        description:"Makes mice and dogs run away from you for 5 seconds",
         repelRadius:null,
         timer:null,
+        duration:300,
         icon: {y:12,x:1,width:spriteScreenWidth,height:spriteScreenWidth},
         activate:function(){
           this.active = true;
           this.timer = null;
           hero.spriteY = 7;
-          this.timer = new Timeout(300,function(){
+          this.timer = {duration:this.duration,delay:this.duration,callback:function(){
             this.active=false;
             this.timer=null;
             if(powerUps.shield.active){
@@ -99,11 +104,11 @@ var powerUps = {
             else{
               hero.spriteY = 2;
             }
-          },null,this);
+          },args:null,caller:this};
           this.timer.tick = function(){
             this.delay--;        
-            if(this.delay>100){}
-            else if(this.delay>50){
+            if(this.delay>this.duration/2){}
+            else if(this.delay>this.duration/4){
               this.delay%30==0?(hero.spriteY==7?hero.spriteY=2:hero.spriteY=7):null;
             }                    
             else if(this.delay>0){
@@ -123,35 +128,33 @@ var powerUps = {
         name:"freeze",
         description:"Makes mize and dog solid frozen for 7.5 seconds",
         timer:null,
+        duration:450,
         icon: {y:12,x:0,width:spriteScreenWidth,height:spriteScreenWidth},
         activate:function(){
           this.active = true;
           this.timer = null;
-          this.timer = new Timeout(450,function(){this.active=false;this.timer=null;},null,this);
+          this.timer = new Timeout(this.duration,function(){this.active=false;this.timer=null;},null,this);
         }
       }
     };
 
 function handlePowerUp(powerUp){
-  console.log(powerUp);
   powerUps[powerUp].activate();
   effects.push(new FlashImage(30,powerUps[powerUp].icon.x,powerUps[powerUp].icon.y));
-/*   if(powerUp){
-    switch(powerUp){
-      case "catnip":
-        powerUps.catnip.activate();
-        break;
-      case "sausage":
-        powerUps.sausage.activate();
-        break;
-      case "cheese":
-        powerUps.cheese.activate();
-        break;
-      case "shield":
-        powerUps.shield.activate();
-        break;
-    }
-  } */
+}
+
+function drawIcons(){
+  var keys = Object.keys(powerUps);
+  var iconsPerRow = 5;
+  var iconWidth = spriteWidth*3;
+  var iconHeight = spriteHeight*3;
+  var iconBlankSpace = 10*scaledWidth;
+  keys.forEach(function(e,i){
+    e = powerUps[e];         
+    joyCtx.drawImage(spriteSheet, e.icon.x*spriteScreenWidth, e.icon.y*spriteScreenHeight,
+      spriteScreenWidth, spriteScreenHeight, i<iconsPerRow?iconBlankSpace:(iconWidth+iconBlankSpace)+(iconBlankSpace),
+      i<iconsPerRow?i*(iconWidth+iconBlankSpace):(i-iconsPerRow)*(iconWidth+iconBlankSpace) ,iconWidth, iconHeight);
+  }); 
 }
 
 function FadeOut(opacity,dir,x,y,duration){
