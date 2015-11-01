@@ -22,7 +22,7 @@ Rail.prototype.draw = function(x){
   this.collisionArray[2] = maze[this.tileIndexX+1]?maze[this.tileIndexX+1][this.tileIndexY]:maze[0][this.tileIndexY]; //RIGHT
   this.collisionArray[3] = maze[this.tileIndexX-1]?maze[this.tileIndexX-1][this.tileIndexY]:maze[maze.length-1][this.tileIndexY]; //LEFT 
   if(this.powerUp){
-    ctx.drawImage(spriteSheet, 0*spriteScreenWidth, 11*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+    ctx.drawImage(spriteSheet, 0*spriteScreenWidth, 16*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
   }
   return false;
 }

@@ -4,6 +4,10 @@ var body,
     joyCtx = joyCanvas.getContext("2d"),
     ctx = canvas.getContext("2d"),
     style = document.createElement("style"),
+    joyCanvas2,
+    joyCtx2,
+    canvas2,
+    ctx2,
     moveObj = {},
     entities = [],
     maze = Array.apply(null,Array(32)).map(function(e){return []}),
@@ -21,6 +25,10 @@ var body,
     spriteScreenWidth = 200,
     joySpriteWidth = 512,
     joySpriteHeight = 512,
+    iconWidth,
+    iconHeight,
+    iconBlankSpace,
+    powerUps,
     joyPos,
     knobX,
     knobY,
@@ -86,6 +94,14 @@ function preBegin(){
     powerUpBox.src = "resources/powerUpBox.png";    
     startScreen.onload = function(){
       begin();  
+      if(spriteSheet.complete){
+        //drawIcons();
+      }
+      else{
+        spriteSheet.onload = function(){
+          //drawIcons();
+        }
+      }
     }
     endScreen.onload = function(){
       canvas.style.backgroundImage = "url('"+endScreen.src+"')";
@@ -120,6 +136,11 @@ function begin(){
     joyCanvas.style.top = canvas.height+5+"px";
     joyPos = "height";
   }
+  joyCanvas2 = joyCanvas.cloneNode(true);
+  joyCtx2 = joyCanvas2.getContext("2d");
+  joyCtx2.globalAlpha = 0.3;
+  body.appendChild(joyCanvas2);
+  joyCanvas2.style["z-index"] = 1;
   scaledWidth = canvas.width/640;
   scaledHeight = canvas.height/480;
   spriteWidth = canvas.width/32;
@@ -134,15 +155,20 @@ function begin(){
   mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
   dogAggroRange = 4*spriteWidth;
-  powerUps.radioActive.repelRadius = 6*spriteWidth;
   //spawnWorker();
   ctx.drawImage(startScreen,0,0,canvas.width,canvas.height);
   joyStickTreshold_MAX = 40*scaledWidth,
   joyStickTreshold = 30*scaledWidth,
+  iconWidth = spriteWidth*3;
+  iconHeight = spriteHeight*3;
+  iconBlankSpace = 10*scaledWidth;
   drawJoyStick();
+  initializePowerUps();
+  drawIcons();
   knobStartX = knobX;
   knobStartY = knobY;
-  setTimeout(drawIcons,0);
+  canvas2 = canvas.cloneNode(true);
+  ctx2 = canvas2.getContext("2d");
   document.addEventListener("keydown",keyDownEv,true);
   canvas.addEventListener("click",touchDown,true);
   joyCanvas.addEventListener("touchstart",touchStart,true);
@@ -151,7 +177,8 @@ function begin(){
   //interval = setInterval(game,1000/60);
 }
 function game(){    
- // var startTime = new Date(); // Acceptable times are below 10      
+  //var startTime = new Date(); // Acceptable times are below 10      
+  frames++;
   translate+=scrollSpeed;
   ctx.translate(scrollSpeed,0); 
   transWidth = canvas.width-translate;
@@ -189,8 +216,8 @@ function game(){
  // ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
   //worker.postMessage(entities);
   getFPS();
- // var endTime = new Date();
- // console.log(endTime.getTime()-startTime.getTime());
+  //var endTime = new Date();
+  //console.log(endTime.getTime()-startTime.getTime());
   if(gameIsRunning){
     animationID = requestAnimationFrame(game);
   } 

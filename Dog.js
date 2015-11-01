@@ -89,7 +89,7 @@ Dog.prototype.collision = function(){
   for(var i=0;i<this.collisionArray.length-1;i++){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }
-  if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
+  if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top&&(!powerUps.freeze.active||powerUps.radioActive.active||powerUps.shield.active)){
     if(powerUps.radioActive.active){
       entities.splice(entities.indexOf(this),1);
       score++;

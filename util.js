@@ -56,6 +56,8 @@ function restart(){
   entities.push(new Hero(spriteWidth*10,spriteHeight*10));
   hero = entities[entities.length-1];
   score = 0;
+  drawIcons();
+  joyCtx2.clearRect(0,0,joyCanvas2.width,joyCanvas2.height);
   //drawMap(mapData);
   mazeBuffer[0] = generateMap();
   mazeBuffer[1] = generateMap();
@@ -93,6 +95,7 @@ function translatePulse(){
   maze.forEach(function(e,x){
     e.forEach(function(e,y){
      // e.constructor.name=="Rail"?spawnable.push([x*spriteWidth,y*spriteHeight]):null;               
+      e.x=x*spriteWidth;
       if(x==maze.length-1&&e.constructor.name=="Rail"){
         if(!~~(Math.random()*powerUpSpawnChance)){
           timeouts.push(new Timeout(~~(Math.random()*canvas.width/Math.abs(scrollSpeed)-1),e.setPowerUp,powerUps[Object.keys(powerUps)[~~(Math.random()*Object.keys(powerUps).length)]].name,e));
@@ -115,13 +118,25 @@ function translatePulse(){
   translate = 0;
 }
 function pauseGame(){
-  paused?interval = (gameIsRunning=true,requestAnimationFrame(game)):(cancelAnimationFrame(animationID),gameIsRunning = false,setTimeout(function(){
+  if(paused){
+    interval = (gameIsRunning=true,requestAnimationFrame(game));
+    clickEvents.forEach(function(e){
+      canvas.removeEventListener("click",e,true);
+    });
+    canvas.addEventListener("click",touchDown,true);
+  }
+  else{
+    cancelAnimationFrame(animationID);
+    gameIsRunning = false;
+    drawMenu(menuOptions);
+  }
+  /*paused?interval = (gameIsRunning=true,requestAnimationFrame(game)):(cancelAnimationFrame(animationID),gameIsRunning = false,drawMenu(menuOptions)/*,setTimeout(function(){
   ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
   ctx.strokeStyle = "white";
   ctx.lineWidth = 2*scaledWidth;
   ctx.fillText("PAUSED",canvas.width/2-(80*scaledWidth)-translate,canvas.height/2-(10*scaledHeight));
   ctx.strokeText("PAUSED",canvas.width/2-(80*scaledWidth)-translate,canvas.height/2-(10*scaledHeight));
-  },15));
+  },15));  */
   paused = !paused;
 }
 
