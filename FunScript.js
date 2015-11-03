@@ -10,7 +10,9 @@ var body,
     ctx2,
     moveObj = {},
     entities = [],
-    maze = Array.apply(null,Array(32)).map(function(e){return []}),
+    mazeWidth = 32,
+    mazeHeight = 24,
+    maze = Array.apply(null,Array(mazeWidth)).map(function(e){return []}),
     score = 0,
     spriteSheet = new Image(),
     backGround = new Image(),
@@ -140,11 +142,11 @@ function begin(){
   joyCtx2 = joyCanvas2.getContext("2d");
   joyCtx2.globalAlpha = 0.3;
   body.appendChild(joyCanvas2);
-  joyCanvas2.style["z-index"] = 1;
+  joyCanvas2.style["z-index"] = -1;
   scaledWidth = canvas.width/640;
   scaledHeight = canvas.height/480;
-  spriteWidth = canvas.width/32;
-  spriteHeight = canvas.height/24;
+  spriteWidth = canvas.width/mazeWidth;
+  spriteHeight = canvas.height/mazeHeight;
   scrollSpeed = -0.5*scaledWidth;
   canvas.style.backgroundWidth = canvas.width;
   canvas.style.backgroundHeight = canvas.height;
