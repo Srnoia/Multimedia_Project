@@ -477,6 +477,77 @@ function initializePowerUps(){
           }
         }
       }
+    },
+    blindness: {
+      active:false,
+      name:"blindness",
+      flag:false,
+      description:"Makes all trees invisible for 7.5 seconds",
+      timer:null,
+      duration:450,
+      icon: {y:12,x:2,width:spriteScreenWidth,height:spriteScreenWidth,
+        positionX:(1*iconWidth)+iconBlankSpace*2,positionY:(1*iconHeight)+iconBlankSpace,
+        draw:function(){
+          this.parent = powerUps.blindness;
+          joyCtx.drawImage(spriteSheet,this.x*this.width,this.y*this.height,
+            this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
+          this.drawDurationBar();
+        }, 
+        drawDurationBar:function(){
+          if(this.parent.active){
+            /*joyCtx.fillStyle = "#FF0000";
+            joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);
+            joyCtx.fillStyle = "#00FF00";
+            joyCtx.fillRect(this.positionX,
+            this.positionY+iconHeight-iconBlankSpace/2,iconWidth*(this.parent.timer.delay/this.parent.duration),iconBlankSpace);*/
+            joyCtx2.save();
+            if(this.parent.flag){
+              joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+              //joyCtx2.globalAlpha = 0.3;
+              joyCtx2.fillStyle = "#00FF00";
+              joyCtx2.beginPath();
+              joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2,Math.PI*2,0);
+              joyCtx2.closePath();
+              joyCtx2.fill();
+              joyCtx2.beginPath();
+              joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/3,Math.PI*2,0);
+              joyCtx2.closePath();
+              joyCtx2.clip();
+              joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+              this.parent.flag = false;
+            }
+            joyCtx2.beginPath();
+            joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2+1,1.5*Math.PI,1.5*Math.PI-((2*Math.PI)*(this.parent.timer.delay/this.parent.duration)),false);
+            joyCtx2.lineTo(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2));
+            joyCtx2.clip();
+            joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+            joyCtx2.restore();             
+          }
+          else{
+         /*   joyCtx.fillStyle = "#FF0000";
+            joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);  */
+          }
+        }
+      },
+      activate:function(){
+        this.active = true;
+        this.flag = true;
+        this.timer = null;
+      //  this.timer = new Timeout(this.duration,function(){this.active=false;this.timer=null;},null,this);
+        this.timer = {duration:this.duration,parent:this,delay:this.duration,
+          callback:function(){
+            this.active=false;
+            this.timer=null;
+          },args:null,caller:this
+        };
+        this.timer.tick = function(){
+          this.delay--;
+          this.parent.icon.drawDurationBar();
+          if(this.delay<=0){  
+            this.callback.call(this.caller,this.args);
+          }
+        }
+      }      
     }
   };
 }

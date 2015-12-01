@@ -96,7 +96,7 @@ function translatePulse(){
     e.forEach(function(e,y){
      // e.constructor.name=="Rail"?spawnable.push([x*spriteWidth,y*spriteHeight]):null;               
       e.x=x*spriteWidth;
-      if(x==maze.length-1&&e.constructor.name=="Rail"){
+      if(x == maze.length-1 && e.constructor == Rail){
         if(!~~(Math.random()*powerUpSpawnChance)){
           timeouts.push(new Timeout(~~(Math.random()*canvas.width/Math.abs(scrollSpeed)-1),e.setPowerUp,powerUps[Object.keys(powerUps)[~~(Math.random()*Object.keys(powerUps).length)]].name,e));
         }

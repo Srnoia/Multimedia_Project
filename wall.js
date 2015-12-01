@@ -8,7 +8,9 @@ function Wall(x,y,typeX,typeY){
 }
 Wall.prototype.draw = function(x){
   this.x = x;
-  ctx.drawImage(spriteSheet, this.typeX*spriteScreenWidth, this.typeY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+  if(!powerUps.blindness.active){
+    ctx.drawImage(spriteSheet, this.typeX*spriteScreenWidth, this.typeY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+  }
 }
 Wall.prototype.collision = function(entity){
   return true;

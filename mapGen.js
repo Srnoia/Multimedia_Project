@@ -36,8 +36,8 @@ function drawMap(map){
 }
 function generateMap(first){
   var mapPointers = [],
-      mapArray = Array.apply(null,Array(32)).map(function(e){return Array.apply(null,Array(24)).map(function(e){return null})}),
-      tempMaze = Array.apply(null,Array(32)).map(function(e){return []});
+      mapArray = Array.apply(null,Array(mazeWidth)).map(function(e){return Array.apply(null,Array(mazeHeight)).map(function(e){return null})}),
+      tempMaze = Array.apply(null,Array(mazeWidth)).map(function(e){return []});
   if(first){
     mapPointers.push({x:1,y:1});
     mapPointers.push({x:2,y:1});
@@ -48,7 +48,7 @@ function generateMap(first){
   }
   else{
     mapArray[0] = (mazeBuffer[0]?mazeBuffer[0][mazeBuffer[0].length-1]:maze[maze.length-1]).map(function(e,i){
-      if(e.constructor.name=="Rail"){
+      if(e.constructor == Rail){
         mapPointers.push({x:1,y:i});
         mapPointers.push({x:2,y:i});
         mapPointers.push({x:3,y:i});
