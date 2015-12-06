@@ -87,6 +87,8 @@ Mouse.prototype.collision = function(){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
+    audEat.currentTime = 0;
+    audEat.play();
     entities.splice(entities.indexOf(this),1);
     //spawner(Mouse);
     //~~(Math.random()*2)?spawner(Dog):null;

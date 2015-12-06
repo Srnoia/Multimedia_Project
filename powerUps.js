@@ -3,6 +3,7 @@ function initializePowerUps(){
     catnip: {
       active:false,
       name:"catnip",
+      sound:audSpeed,
       flag:false,
       description:"Makes you move faster for 15 seconds",
       timer:null,
@@ -94,6 +95,7 @@ function initializePowerUps(){
       active:false,
       name:"sausage",
       flag:false,
+      sound:audSausage,
       description:"Makes all dogs chase you for 15 seconds",
       timer:null,
       duration:900,
@@ -165,6 +167,7 @@ function initializePowerUps(){
       active:false,
       name:"cheese",
       flag:false,
+      sound:audCheese,
       description:"Makes all mice chase you for 15 seconds",
       timer:null,
       duration:900,
@@ -236,6 +239,7 @@ function initializePowerUps(){
       active:false,
       name:"shield",
       flag:false,
+      sound:audShield,
       description:"Makes you immune to dogs for 15 seconds",
       timer:null,
       duration:450,
@@ -322,6 +326,7 @@ function initializePowerUps(){
     radioActive: {
       active:false,
       name:"radioActive",
+      sound:audRadioActive,
       description:"Makes mice and dogs run away from you for 5 seconds",
       repelRadius:6*spriteWidth,
       timer:null,
@@ -409,6 +414,7 @@ function initializePowerUps(){
     freeze:{
       active:false,
       name:"freeze",
+      sound:audIce,
       description:"Makes mize and dog solid frozen for 7.5 seconds",
       timer:null,
       flag:false,
@@ -482,6 +488,7 @@ function initializePowerUps(){
       active:false,
       name:"blindness",
       flag:false,
+      sound:audBlind,
       description:"Makes all trees invisible for 7.5 seconds",
       timer:null,
       duration:450,
@@ -553,6 +560,7 @@ function initializePowerUps(){
 }
 function handlePowerUp(powerUp){
   powerUps[powerUp].activate();
+  powerUps[powerUp].sound.currentTime==0?powerUps[powerUp].sound.play():powerUps[powerUp].sound.currentTime=0,powerUps[powerUp].sound.play();
   effects.push(new FlashImage(30,powerUps[powerUp].icon.x,powerUps[powerUp].icon.y));
 }
 

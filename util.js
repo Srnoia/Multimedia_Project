@@ -36,6 +36,11 @@ function replay(){
 }
 function restart(){
   //clearInterval(interval);
+  audBackground.currentTime = 0;
+  audBackground.play();
+  audBackground.addEventListener("timeupdate",loop,false);
+  audStart.currentTime = 0;
+  audStart.play();
   var keys = Object.keys(powerUps);
   keys.forEach(function(e){
     powerUps[e].active = false;
@@ -119,6 +124,7 @@ function translatePulse(){
 }
 function pauseGame(){
   if(paused){
+    audBackground.play();
     interval = (gameIsRunning=true,requestAnimationFrame(game));
     clickEvents.forEach(function(e){
       canvas.removeEventListener("click",e,true);
@@ -126,6 +132,7 @@ function pauseGame(){
     canvas.addEventListener("click",touchDown,true);
   }
   else{
+    audBackground.pause();
     cancelAnimationFrame(animationID);
     gameIsRunning = false;
     drawMenu(menuOptions);
@@ -158,5 +165,11 @@ function Timeout(delay,callback,args,caller){
     if(timeouts.indexOf(this)>-1){
       timeouts.splice(timeouts.indexOf(this),1);
     }
+  }
+}
+function loop(e){
+  //console.log(e);
+  if(audBackground.currentTime >= audBackground.duration-0.5){
+    audBackground.currentTime = 0;
   }
 }

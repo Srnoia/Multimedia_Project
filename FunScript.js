@@ -20,11 +20,27 @@ var body,
     startScreen = new Image(),
     lastFrame = new Image(),
     joyStick = new Image(),    
-    powerUpBox = new Image(),    
+    powerUpBox = new Image(),
+    loadingScreen = new Image(),
+    loadingTree = new Image(),
+    arrowSprite = new Image(),
+    audAxe = new Audio(),
+    audBackground = new Audio(),
+    audBlind = new Audio(),
+    audCheese = new Audio(),
+    audEat = new Audio(),
+    audEnd = new Audio(),
+    audIce = new Audio(),    
+    audRadioActive = new Audio(),
+    audSausage = new Audio(),
+    audShield = new Audio(),
+    audSpeed = new Audio(),
+    audStart = new Audio(),
+    audShieldCollide = new Audio(),
     spriteHeight = 20,
     spriteWidth = 20,
-    spriteScreenHeight = 200,
-    spriteScreenWidth = 200,
+    spriteScreenHeight = 100,
+    spriteScreenWidth = 100,
     joySpriteWidth = 512,
     joySpriteHeight = 512,
     iconWidth,
@@ -78,6 +94,8 @@ var body,
     effects = [],
     powerUpSpawnChance = 200,
     activePowerUp,
+    loadedPerc = 0,
+    loadable = 0,
     dogSpawnChance = 100, // 1 divided by this number is the chance a dog spawns on any new open block
     mouseSpawnChance = 75, // same as above except it requires a dog not to spawn
     img = new Image();
@@ -87,32 +105,6 @@ var body,
       "#main{position:absolute;left:5px;top:5px}";
 
 function preBegin(){
-  joyStick.src =  "resources/joyStick.png";
-  joyStick.onload = function(){
-    startScreen.src = "resources/Logo.jpg";
-    endScreen.src = "resources/end.jpg";
-    spriteSheet.src = "resources/spriteSheet.png";
-    backGround.src = "resources/background.jpg";     
-    powerUpBox.src = "resources/powerUpBox.png";    
-    startScreen.onload = function(){
-      begin();  
-      if(spriteSheet.complete){
-        //drawIcons();
-      }
-      else{
-        spriteSheet.onload = function(){
-          //drawIcons();
-        }
-      }
-    }
-    endScreen.onload = function(){
-      canvas.style.backgroundImage = "url('"+endScreen.src+"')";
-      canvas.style.backgroundRepeat = "no-repeat";
-      canvas.style.backgroundSize = "100%";
-    }
-  }      
-}
-function begin(){
   document.querySelector("head").appendChild(style);
   body = document.querySelector("body");
   body.appendChild(canvas);
@@ -138,15 +130,146 @@ function begin(){
     joyCanvas.style.top = canvas.height+5+"px";
     joyPos = "height";
   }
+  scaledWidth = canvas.width/640;
+  scaledHeight = canvas.height/480;
+  spriteWidth = canvas.width/mazeWidth;
+  spriteHeight = canvas.height/mazeHeight;
+  loadingScreen.src = "resources/Loading.jpg";
+  loadable++;
+  loadingTree.src = "resources/loadingTree.png";
+  loadable++;
+  arrowSprite.src = "resources/arrowSpriteSheet.png";
+  loadable++;
+  joyStick.src =  "resources/joyStick.png";
+  loadable++;
+  startScreen.src = "resources/Logo.jpg";
+  loadable++;
+  endScreen.src = "resources/end.jpg";
+  loadable++;
+  spriteSheet.src = "resources/spriteSheet.png";
+  loadable++;
+  backGround.src = "resources/background.jpg";     
+  loadable++;
+  powerUpBox.src = "resources/powerUpBox.png";   
+  loadable++;
+  audAxe.src = "resources/sounds/axe.mp3";
+  loadable++;
+  audBackground.src = "resources/sounds/background.mp3";
+  loadable++;
+  audBlind.src = "resources/sounds/blind.mp3";
+  loadable++;
+  audCheese.src = "resources/sounds/cheese.mp3";
+  loadable++;
+  audEat.src = "resources/sounds/eat.mp3";
+  loadable++;
+  audEnd.src = "resources/sounds/end.mp3";
+  loadable++;
+  audIce.src = "resources/sounds/ice.mp3";
+  loadable++;
+  audRadioActive.src = "resources/sounds/radioActive.mp3";
+  loadable++;
+  audSausage.src = "resources/sounds/sausage.mp3";
+  loadable++;
+  audShield.src = "resources/sounds/shield.mp3";
+  loadable++;
+  audSpeed.src = "resources/sounds/speed.mp3";
+  loadable++;
+  audStart.src = "resources/sounds/start.mp3";
+  loadable++;
+  audShieldCollide.src = "resources/sounds/shieldCollide.mp3";
+  loadable++;
+  audAxe.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audBackground.addEventListener("loadeddata", function(){
+    audBackground.volume = 0.2;
+    loading();
+  },false);
+  audBlind.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audCheese.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audEat.addEventListener("loadeddata", function(){
+    audEat.volume = 0.2;
+    loading();
+  },false);
+  audEnd.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audIce.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audRadioActive.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audSausage.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audShield.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audSpeed.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audStart.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  audShieldCollide.addEventListener("loadeddata", function(){
+    loading();
+  },false);
+  joyStick.onload = function(){
+    loading();   
+  }
+  loadingScreen.onload = function(){
+    ctx.drawImage(loadingScreen,0,0,canvas.width,canvas.height);
+    loading();   
+  }
+  loadingTree.onload = function(){
+    loading();   
+  }
+  arrowSprite.onload = function(){
+    loading();   
+  }
+  startScreen.onload = function(){
+    loading();   
+  }
+  endScreen.onload = function(){
+    loading();   
+  }
+  spriteSheet.onload = function(){
+    loading();   
+  }
+  backGround.onload = function(){
+    loading();   
+  }
+  powerUpBox.onload = function(){
+    loading();   
+  }
+  endScreen.onload = function(){
+    loading();
+    canvas.style.backgroundImage = "url('"+endScreen.src+"')";
+    canvas.style.backgroundRepeat = "no-repeat";
+    canvas.style.backgroundSize = "100%";
+  }      
+}
+function loading(){
+  var increment = 100/loadable;
+  loadedPerc += increment;
+  console.log(loadedPerc);
+  if(loadedPerc >= 100){
+    console.log('test');
+    begin();
+  }  
+}
+function begin(){
+ // ctx.translate(0.5,0.5);
   joyCanvas2 = joyCanvas.cloneNode(true);
   joyCtx2 = joyCanvas2.getContext("2d");
   joyCtx2.globalAlpha = 0.3;
   body.appendChild(joyCanvas2);
   joyCanvas2.style["z-index"] = -1;
-  scaledWidth = canvas.width/640;
-  scaledHeight = canvas.height/480;
-  spriteWidth = canvas.width/mazeWidth;
-  spriteHeight = canvas.height/mazeHeight;
   scrollSpeed = -0.5*scaledWidth;
   canvas.style.backgroundWidth = canvas.width;
   canvas.style.backgroundHeight = canvas.height;
@@ -164,7 +287,7 @@ function begin(){
   iconWidth = spriteWidth*3;
   iconHeight = spriteHeight*3;
   iconBlankSpace = 10*scaledWidth;
-  drawJoyStick();
+  //drawJoyStick();
   initializePowerUps();
   drawIcons();
   knobStartX = knobX;
@@ -173,9 +296,9 @@ function begin(){
   ctx2 = canvas2.getContext("2d");
   document.addEventListener("keydown",keyDownEv,true);
   canvas.addEventListener("click",touchDown,true);
-  joyCanvas.addEventListener("touchstart",touchStart,true);
-  joyCanvas.addEventListener("touchend",touchEnd,true);
-  joyCanvas.addEventListener("touchmove",touchMove,true); 
+  //joyCanvas.addEventListener("touchstart",touchStart,true);
+  //joyCanvas.addEventListener("touchend",touchEnd,true);
+  //joyCanvas.addEventListener("touchmove",touchMove,true); 
   //interval = setInterval(game,1000/60);
 }
 function game(){    
@@ -226,6 +349,10 @@ function game(){
 }
 function gameEnd(){
   //clearInterval(interval);
+  audEnd.currentTime = 0;
+  audEnd.play();
+  audBackground.pause();
+  audBackground.removeEventListener("timeupdate",loop,false);  
   gameIsRunning = false;
   startFlag = true;
   paused = false;

@@ -91,11 +91,15 @@ Dog.prototype.collision = function(){
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top&&(!powerUps.freeze.active||powerUps.radioActive.active||powerUps.shield.active)){
     if(powerUps.radioActive.active){
+      audEat.currentTime = 0;
+      audEat.play();      
       entities.splice(entities.indexOf(this),1);
       score++;
     }
     else if(powerUps.shield.active){
       entities.splice(entities.indexOf(this),1);
+      audShieldCollide.currentTime = 0;
+      audShieldCollide.play();
     }
     else{
       gameEnd();
