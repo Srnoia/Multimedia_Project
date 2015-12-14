@@ -135,7 +135,7 @@ function pauseGame(){
     audBackground.pause();
     cancelAnimationFrame(animationID);
     gameIsRunning = false;
-    drawMenu(menuOptions);
+    drawMenu2(menuOptions);
   }
   /*paused?interval = (gameIsRunning=true,requestAnimationFrame(game)):(cancelAnimationFrame(animationID),gameIsRunning = false,drawMenu(menuOptions)/*,setTimeout(function(){
   ctx.font = 36*scaledWidth+"px Shojumaru-Regular";
@@ -172,4 +172,16 @@ function loop(e){
   if(audBackground.currentTime >= audBackground.duration-0.5){
     audBackground.currentTime = 0;
   }
+}
+
+function getNearestSprite(){
+  var sizes = [10,20,30,40,50,100,150,200];
+  var nearest = sizes[0];
+  for(var i = 0;i<sizes.length;i++){
+    console.log(Math.abs(sizes[i]-spriteWidth));
+    if(Math.abs(sizes[i]-spriteWidth)<Math.abs(nearest-spriteWidth)){
+      nearest = sizes[i];
+    }
+  }
+  return nearest;
 }

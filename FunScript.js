@@ -92,6 +92,7 @@ var body,
     animationID = null,
     timeouts = [],
     effects = [],
+    touchFlag = false,
     powerUpSpawnChance = 200,
     activePowerUp,
     loadedPerc = 0,
@@ -134,6 +135,8 @@ function preBegin(){
   scaledHeight = canvas.height/480;
   spriteWidth = canvas.width/mazeWidth;
   spriteHeight = canvas.height/mazeHeight;
+  spriteScreenWidth = getNearestSprite();
+  spriteScreenHeight = getNearestSprite();
   loadingScreen.src = "resources/Loading.jpg";
   loadable++;
   loadingTree.src = "resources/loadingTree.png";
@@ -146,7 +149,7 @@ function preBegin(){
   loadable++;
   endScreen.src = "resources/end.jpg";
   loadable++;
-  spriteSheet.src = "resources/spriteSheet.png";
+  spriteSheet.src = "resources/spriteSheet "+getNearestSprite()+".png";
   loadable++;
   backGround.src = "resources/background.jpg";     
   loadable++;
@@ -182,7 +185,6 @@ function preBegin(){
     loading();
   },false);
   audBackground.addEventListener("loadeddata", function(){
-    audBackground.volume = 0.2;
     loading();
   },false);
   audBlind.addEventListener("loadeddata", function(){
@@ -192,7 +194,6 @@ function preBegin(){
     loading();
   },false);
   audEat.addEventListener("loadeddata", function(){
-    audEat.volume = 0.2;
     loading();
   },false);
   audEnd.addEventListener("loadeddata", function(){
@@ -257,7 +258,7 @@ function preBegin(){
 function loading(){
   var increment = 100/loadable;
   loadedPerc += increment;
-  console.log(loadedPerc);
+  //console.log(loadedPerc);
   if(loadedPerc >= 100){
     console.log('test');
     begin();
@@ -294,8 +295,11 @@ function begin(){
   knobStartY = knobY;
   canvas2 = canvas.cloneNode(true);
   ctx2 = canvas2.getContext("2d");
+  initMenu2();
   document.addEventListener("keydown",keyDownEv,true);
   canvas.addEventListener("click",touchDown,true);
+  canvas.addEventListener("touchstart",handleTouchS,true);
+  joyCanvas.addEventListener("touchstart",handleTouch,true);
   //joyCanvas.addEventListener("touchstart",touchStart,true);
   //joyCanvas.addEventListener("touchend",touchEnd,true);
   //joyCanvas.addEventListener("touchmove",touchMove,true); 

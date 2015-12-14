@@ -4,7 +4,7 @@ var menuOptions = {
   Graphics: {
     hitBox : {left:null,right:null,bottom:null,top:null},
     header:"GRAPHICS",
-    clickEffect: function(){drawMenu(menuOptions.Graphics);},
+    clickEffect: function(){drawMenu2(menuOptions.Graphics);},
     selections:["Resolution","Textures"],
     returnHitBox: {left:null,right:null,bottom:null,top:null},
     Resolution:{
@@ -21,7 +21,7 @@ var menuOptions = {
   Audio: {
     hitBox : {left:null,right:null,bottom:null,top:null},
     header:"AUDIO",
-    clickEffect: function(){drawMenu(menuOptions.Audio)},
+    clickEffect: function(){drawMenu2(menuOptions.Audio)},
     selections:["Main","Effects","Music"],
     returnHitBox: {left:null,right:null,bottom:null,top:null},
     Main:{
@@ -59,7 +59,7 @@ var menuOptions = {
   Store: {
     hitBox : {left:null,right:null,bottom:null,top:null},
     header:"STORE",
-    clickEffect: function(){drawMenu(menuOptions.Store)},
+    clickEffect: function(){drawMenu2(menuOptions.Store)},
     selections:["Tutorial","Practice"],
     returnHitBox: {left:null,right:null,bottom:null,top:null},
     Tutorial:{
@@ -76,7 +76,7 @@ var menuOptions = {
   Other: {
     hitBox : {left:null,right:null,bottom:null,top:null},
     header:"OTHER",
-    clickEffect: function(){drawMenu(menuOptions.Other)},
+    clickEffect: function(){drawMenu2(menuOptions.Other)},
     selections:["About","Credits"],
     returnHitBox: {left:null,right:null,bottom:null,top:null},
     About:{
@@ -158,15 +158,15 @@ function initMenu2(){
       current2.image = {y:(sub++)*175,x:0,height:175,width:600};
     }
   }
-  returnImg = {y:1525,x:0,height:175,width:600};
+  returnImg = {y:1575,x:0,height:175,width:600};
 }
 function drawMenu2(menuObject){
   var hitBoxMargin = 10*scaledWidth;
   var menuSeparation = 5*scaledWidth;
   var menuHeight = 300*scaledWidth;
   var menuWidth = 200*scaledWidth;
-  var buttonHeight = 40*scaledWidth;
-  var buttonWidth = 100*scaledWidth;  
+  var buttonHeight = menuObject.header=="MENU"?40*scaledWidth:35*scaledWidth;
+  var buttonWidth = menuObject.header=="MENU"?100*scaledWidth:140*scaledWidth;  
   lastCall = menuObject;
   //ctx.fillStyle  = "#FFFFFF";
   //ctx.fillRect(canvas.width/2-(100*scaledWidth)-translate,canvas.height/2-(130*scaledHeight),menuWidth,menuHeight);
@@ -177,15 +177,38 @@ function drawMenu2(menuObject){
   ctx.drawImage(menuBack,canvas.width/2-(100*scaledWidth)-translate,canvas.height/2-(130*scaledHeight),menuWidth,menuHeight);
   //ctx.globalAlpha = 1;
   for(var i=0,current;i<menuObject.selections.length;i++){
-    current = menuObject[menuObject.selections[i]];
-    current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
-    current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
-    current.hitBox.top = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-(menuSeparation-(menuSeparation*i));
-    current.hitBox.bottom = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-(menuSeparation-(menuSeparation*i))+buttonHeight; 
-    ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
-    -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2,(canvas.height/2)-(menuHeight/2)+buttonHeight*2+(i*buttonHeight)-(menuSeparation-(menuSeparation*i)),
-    buttonWidth,buttonHeight);
+    if(i<menuObject.selections.length-1){
+      current = menuObject[menuObject.selections[i]];
+      current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
+      current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
+      current.hitBox.top = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-(menuSeparation-(menuSeparation*i));
+      current.hitBox.bottom = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-(menuSeparation-(menuSeparation*i))+buttonHeight; 
+      ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
+      current.hitBox.left,current.hitBox.top,buttonWidth,buttonHeight);
+    }
+    else{
+      current = menuObject[menuObject.selections[i]];
+      current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
+      current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
+      current.hitBox.top = (canvas.height/2)+(menuHeight/2)-buttonHeight;
+      current.hitBox.bottom = (canvas.height/2)+(menuHeight/2); 
+      ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
+      current.hitBox.left,current.hitBox.top,buttonWidth,buttonHeight);    
+    }
   }
+  if(menuObject.header!='MENU'){
+    menuObject.returnHitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
+    menuObject.returnHitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
+    menuObject.returnHitBox.top = (canvas.height/2)+(menuHeight/2)-buttonHeight;
+    menuObject.returnHitBox.bottom = (canvas.height/2)+(menuHeight/2);    
+    console.log((canvas.height/2)+(menuHeight/2));
+    ctx.drawImage(menuSheet, returnImg.x,returnImg.y,returnImg.width,returnImg.height,
+    menuObject.returnHitBox.left,menuObject.returnHitBox.top,buttonWidth,buttonHeight);
+  }
+  clickEvents.forEach(function(e){
+    canvas.removeEventListener("click",e,true);
+  });
+  canvas.addEventListener("click", menu1Click,true);
 }
 function menu1Click(e){
   var clickX = e.clientX;
@@ -203,7 +226,7 @@ function menu1Click(e){
   }
   if(lastCall.header!='MENU'){
     if(clickX>lastCall.returnHitBox.left&&clickX<lastCall.returnHitBox.right&&lastCall.returnHitBox.top<clickY&&lastCall.returnHitBox.bottom>clickY){
-      drawMenu(menuOptions);  
+      drawMenu2(menuOptions);  
     }
   }
 }
