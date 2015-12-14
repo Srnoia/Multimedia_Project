@@ -36,6 +36,8 @@ function replay(){
 }
 function restart(){
   //clearInterval(interval);
+  level = 1;
+  spriteSheets = [spriteSheet,spriteSheet2];
   audBackground.currentTime = 0;
   audBackground.play();
   audBackground.addEventListener("timeupdate",loop,false);
@@ -89,9 +91,14 @@ function translatePulse(){
   });
   maze.shift();
   if(!mazeBuffer[0].length){
+    achievements.levelsProgressed++;
+    level++;
+    if(level%10==0){
+      spriteSheets.push(spriteSheets.shift());
+    }
     mazeBuffer.shift();
-    mazeBuffer.push(generateMap());
-    if(Math.abs(scrollSpeed)<hero.initialSpeed-(1*scaledWidth)){scrollSpeed -= 0.02*scaledWidth;}
+    mazeBuffer.push(generateMap(null,level%10==9?spriteSheets[1]:null));
+    if(Math.abs(scrollSpeed)<hero.initialSpeed-(1*scaledWidth)){scrollSpeed -= 0.03*scaledWidth;}
     if(dogSpawnChance>50){dogSpawnChance-=3;}
     if(mouseSpawnChance>40){mouseSpawnChance-=3;}
   }
@@ -106,11 +113,11 @@ function translatePulse(){
           timeouts.push(new Timeout(~~(Math.random()*canvas.width/Math.abs(scrollSpeed)-1),e.setPowerUp,powerUps[Object.keys(powerUps)[~~(Math.random()*Object.keys(powerUps).length)]].name,e));
         }
         if(!~~(Math.random()*dogSpawnChance)){
-          entities.push(new Dog(x*spriteWidth,y*spriteHeight));
+          entities.push(new Dog(x*spriteWidth,y*spriteHeight,null,spriteSheets[0]));
           entities[entities.length-1].rail = e;
         }
         else if(!~~(Math.random()*mouseSpawnChance)){
-          entities.push(new Mouse(x*spriteWidth,y*spriteHeight));
+          entities.push(new Mouse(x*spriteWidth,y*spriteHeight,null,spriteSheets[0]));
           entities[entities.length-1].rail = e;
         }
       }
@@ -177,8 +184,10 @@ function loop(e){
 function getNearestSprite(){
   var sizes = [10,20,30,40,50,100,150,200];
   var nearest = sizes[0];
+  if(options.textures!="auto"){
+    return options.textures;
+  }
   for(var i = 0;i<sizes.length;i++){
-    console.log(Math.abs(sizes[i]-spriteWidth));
     if(Math.abs(sizes[i]-spriteWidth)<Math.abs(nearest-spriteWidth)){
       nearest = sizes[i];
     }

@@ -1,4 +1,4 @@
-function Dog(x,y,dir){
+function Dog(x,y,dir,spriteSheet){
   this.type = "dog";
   this.x = x;
   this.y = y;
@@ -6,6 +6,7 @@ function Dog(x,y,dir){
   this.speed = 1*scaledWidth;
   this.initialSpeed = this.speed;
   this.dir = dir?dir:0;
+  this.spriteSheet = spriteSheet;
   this.stopped = true;
   this.movement = null;
   this.movementObj = {0:null,1:"left",2:"right",3:"up",4:"down",5:null};
@@ -19,7 +20,7 @@ function Dog(x,y,dir){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Dog.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(this.spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Dog.prototype.move = function(){
   if(!powerUps.freeze.active){
@@ -91,6 +92,7 @@ Dog.prototype.collision = function(){
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top&&(!powerUps.freeze.active||powerUps.radioActive.active||powerUps.shield.active)){
     if(powerUps.radioActive.active){
+      achievements.dogsEaten++;
       audEat.currentTime = 0;
       audEat.play();      
       entities.splice(entities.indexOf(this),1);

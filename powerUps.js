@@ -9,11 +9,11 @@ function initializePowerUps(){
       timer:null,
       duration:900,
       fadeArray:[],
-      icon: {y:11,x:4,width:spriteScreenWidth,height:spriteScreenWidth,
+      icon: {y:1,x:0,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
         positionX:(0*iconWidth)+iconBlankSpace,positionY:(0*iconHeight),
         draw:function(){
           this.parent = powerUps.catnip;
-          joyCtx.drawImage(spriteSheet,this.x*this.width,this.y*this.height,
+          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
             this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
           this.drawDurationBar();
         }, 
@@ -99,11 +99,11 @@ function initializePowerUps(){
       description:"Makes all dogs chase you for 15 seconds",
       timer:null,
       duration:900,
-      icon: {y:11,x:2,width:spriteScreenWidth,height:spriteScreenWidth,
+      icon: {y:0,x:2,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
         positionX:(0*iconWidth)+iconBlankSpace,positionY:(1*iconHeight)+iconBlankSpace,
         draw:function(){
           this.parent = powerUps.sausage;
-          joyCtx.drawImage(spriteSheet,this.x*this.width,this.y*this.height,
+          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
             this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
           this.drawDurationBar();
         }, 
@@ -171,11 +171,11 @@ function initializePowerUps(){
       description:"Makes all mice chase you for 15 seconds",
       timer:null,
       duration:900,
-      icon: {y:11,x:3,width:spriteScreenWidth,height:spriteScreenWidth,
+      icon: {y:0,x:3,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
         positionX:(0*iconWidth)+iconBlankSpace,positionY:(2*iconHeight)+iconBlankSpace,
         draw:function(){
           this.parent = powerUps.cheese;
-          joyCtx.drawImage(spriteSheet,this.x*this.width,this.y*this.height,
+          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
             this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
           this.drawDurationBar();
         }, 
@@ -243,11 +243,11 @@ function initializePowerUps(){
       description:"Makes you immune to dogs for 15 seconds",
       timer:null,
       duration:450,
-      icon: {y:11,x:1,width:spriteScreenWidth,height:spriteScreenWidth,
+      icon: {y:0,x:1,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
         positionX:(0*iconWidth)+iconBlankSpace,positionY:(3*iconHeight)+iconBlankSpace,
         draw:function(){
           this.parent = powerUps.shield;
-          joyCtx.drawImage(spriteSheet,this.x*this.width,this.y*this.height,
+          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
             this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
           this.drawDurationBar();
         }, 
@@ -332,11 +332,11 @@ function initializePowerUps(){
       timer:null,
       flag:false,
       duration:300,
-      icon: {y:12,x:1,width:spriteScreenWidth,height:spriteScreenWidth,
+      icon: {y:1,x:2,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
         positionX:(0*iconWidth)+iconBlankSpace,positionY:(4*iconHeight)+iconBlankSpace,
         draw:function(){
           this.parent = powerUps.radioActive;
-          joyCtx.drawImage(spriteSheet,this.x*this.width,this.y*this.height,
+          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
             this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
           this.drawDurationBar();
         }, 
@@ -419,11 +419,11 @@ function initializePowerUps(){
       timer:null,
       flag:false,
       duration:450,
-      icon: {y:12,x:0,width:spriteScreenWidth,height:spriteScreenWidth,
+      icon: {y:1,x:1,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
         positionX:(1*iconWidth)+iconBlankSpace*2,positionY:(0*iconHeight),
         draw:function(){
           this.parent = powerUps.freeze;
-          joyCtx.drawImage(spriteSheet,this.x*this.width,this.y*this.height,
+          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
             this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
           this.drawDurationBar();
         }, 
@@ -492,11 +492,11 @@ function initializePowerUps(){
       description:"Makes all trees invisible for 7.5 seconds",
       timer:null,
       duration:450,
-      icon: {y:12,x:2,width:spriteScreenWidth,height:spriteScreenWidth,
+      icon: {y:1,x:3,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
         positionX:(1*iconWidth)+iconBlankSpace*2,positionY:(1*iconHeight)+iconBlankSpace,
         draw:function(){
           this.parent = powerUps.blindness;
-          joyCtx.drawImage(spriteSheet,this.x*this.width,this.y*this.height,
+          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
             this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
           this.drawDurationBar();
         }, 
@@ -613,7 +613,7 @@ function FlashImage(duration,spriteX,spriteY){
   this.drawImage = function(){
     ctx.save();
     ctx.globalAlpha = 0.4;
-    ctx.drawImage(spriteSheet, this.spriteX*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, this.width, this.height);
+    ctx.drawImage(powerUpIcons, this.spriteX*powerUpSpriteWidth, this.spriteY*powerUpSpriteHeight, powerUpSpriteWidth, powerUpSpriteHeight, this.x, this.y, this.width, this.height);
     ctx.restore();
   }
   this.tick = function(){

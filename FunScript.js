@@ -15,12 +15,14 @@ var body,
     maze = Array.apply(null,Array(mazeWidth)).map(function(e){return []}),
     score = 0,
     spriteSheet = new Image(),
+    spriteSheet2 = new Image(),
     backGround = new Image(),
     endScreen = new Image(),
     startScreen = new Image(),
     lastFrame = new Image(),
     joyStick = new Image(),    
     powerUpBox = new Image(),
+    powerUpIcons = new Image(),
     loadingScreen = new Image(),
     loadingTree = new Image(),
     arrowSprite = new Image(),
@@ -37,15 +39,20 @@ var body,
     audSpeed = new Audio(),
     audStart = new Audio(),
     audShieldCollide = new Audio(),
+    sounds = [audAxe,audBlind,audCheese,audEat,audEnd,audIce,
+      audRadioActive,audSausage,audShield,audSpeed,audStart,audShieldCollide],
     spriteHeight = 20,
     spriteWidth = 20,
     spriteScreenHeight = 100,
     spriteScreenWidth = 100,
+    powerUpSpriteWidth = 100,
+    powerUpSpriteHeight = 100,
     joySpriteWidth = 512,
     joySpriteHeight = 512,
     iconWidth,
     iconHeight,
     iconBlankSpace,
+    spriteSheets = [spriteSheet,spriteSheet2],
     powerUps,
     joyPos,
     knobX,
@@ -95,8 +102,9 @@ var body,
     touchFlag = false,
     powerUpSpawnChance = 200,
     activePowerUp,
-    loadedPerc = 0,
+    loadedPerc = 0.1,
     loadable = 0,
+    level = 0,
     dogSpawnChance = 100, // 1 divided by this number is the chance a dog spawns on any new open block
     mouseSpawnChance = 75, // same as above except it requires a dog not to spawn
     img = new Image();
@@ -106,14 +114,22 @@ var body,
       "#main{position:absolute;left:5px;top:5px}";
 
 function preBegin(){
+  options = JSON.parse(localStorage.getItem("options"))||options;
+  achievements = JSON.parse(localStorage.getItem("achievements"))||achievements;
   document.querySelector("head").appendChild(style);
   body = document.querySelector("body");
   body.appendChild(canvas);
   body.appendChild(joyCanvas);
   body.style.fontFamily = "Shojumaru-Regular";
   if(window.innerWidth>window.innerHeight){
-    canvas.height = window.innerHeight-8;
-    canvas.width = 640*(canvas.height/480)-8;
+    if(options.resolution=="scaling"){
+      canvas.height = window.innerHeight-8;
+      canvas.width = 640*(canvas.height/480)-8;
+    }
+    else{
+      canvas.width = options.resolution.width;
+      canvas.height = options.resolution.height;
+    }
     joyCanvas.height = canvas.height;
     joyCanvas.width = 200*(canvas.height/640);
     joyCanvas.style.position =  "absolute";
@@ -122,15 +138,21 @@ function preBegin(){
     joyPos = "width";
   }
   else{
-    canvas.width = window.innerWidth-8;
-    canvas.height = 480*(canvas.width/640)-8;
+    if(options.resolution=="scaling"){
+      canvas.width = window.innerWidth-8;
+      canvas.height = 480*(canvas.width/640)-8;
+    }
+    else{
+      canvas.width = options.resolution.width;
+      canvas.height = options.resolution.height;
+    }
     joyCanvas.width = canvas.width;
     joyCanvas.height = 200*(canvas.width/640);
     joyCanvas.style.position = "absolute";
     joyCanvas.style.left = 5+"px";
     joyCanvas.style.top = canvas.height+5+"px";
     joyPos = "height";
-  }
+  }                                   
   scaledWidth = canvas.width/640;
   scaledHeight = canvas.height/480;
   spriteWidth = canvas.width/mazeWidth;
@@ -143,6 +165,8 @@ function preBegin(){
   loadable++;
   arrowSprite.src = "resources/arrowSpriteSheet.png";
   loadable++;
+  powerUpIcons.src = "resources/powerUpSheet.png";
+  loadable++;
   joyStick.src =  "resources/joyStick.png";
   loadable++;
   startScreen.src = "resources/Logo.jpg";
@@ -150,6 +174,8 @@ function preBegin(){
   endScreen.src = "resources/end.jpg";
   loadable++;
   spriteSheet.src = "resources/spriteSheet "+getNearestSprite()+".png";
+  loadable++;
+  spriteSheet2.src = "resources/spriteSheet2 "+getNearestSprite()+".png";
   loadable++;
   backGround.src = "resources/background.jpg";     
   loadable++;
@@ -181,43 +207,14 @@ function preBegin(){
   loadable++;
   audShieldCollide.src = "resources/sounds/shieldCollide.mp3";
   loadable++;
-  audAxe.addEventListener("loadeddata", function(){
-    loading();
-  },false);
+  sounds.forEach(function(e){
+    e.addEventListener("loadeddata",function(){
+      loading();
+    },false);
+    e.volume = options.volumeMain*options.volumeEffects;  
+  });
+  audBackground.volume = 0;//options.volumeMain*options.volumeMusic;
   audBackground.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audBlind.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audCheese.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audEat.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audEnd.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audIce.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audRadioActive.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audSausage.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audShield.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audSpeed.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audStart.addEventListener("loadeddata", function(){
-    loading();
-  },false);
-  audShieldCollide.addEventListener("loadeddata", function(){
     loading();
   },false);
   joyStick.onload = function(){
@@ -233,6 +230,9 @@ function preBegin(){
   arrowSprite.onload = function(){
     loading();   
   }
+  powerUpIcons.onload = function(){
+    loading();
+  }
   startScreen.onload = function(){
     loading();   
   }
@@ -240,6 +240,9 @@ function preBegin(){
     loading();   
   }
   spriteSheet.onload = function(){
+    loading();   
+  }
+  spriteSheet2.onload = function(){
     loading();   
   }
   backGround.onload = function(){
@@ -260,7 +263,6 @@ function loading(){
   loadedPerc += increment;
   //console.log(loadedPerc);
   if(loadedPerc >= 100){
-    console.log('test');
     begin();
   }  
 }
@@ -278,7 +280,7 @@ function begin(){
   //drawMap(mapData);
   maze = generateMap(true);
   mazeBuffer[0] = generateMap();
-  mazeBuffer[1] = generateMap();
+  //mazeBuffer[1] = generateMap();
   maze.push(mazeBuffer[0].shift());
   dogAggroRange = 4*spriteWidth;
   //spawnWorker();
@@ -316,7 +318,7 @@ function game(){
   ctx.drawImage(backGround, 0-translate, 0, canvas.width, canvas.height);
   ctx.font = 15*scaledWidth+"px Verdana";
   ctx.fillStyle = "#000000";
-  ctx.fillText("SCORE: "+score,5-translate,35*scaledHeight);
+  ctx.fillText("SCORE: "+score+"    LEVEL: "+level,5-translate,35*scaledHeight);
   ctx.fill();
   maze.forEach(function(el,x){
     el.forEach(function(elem){
@@ -344,7 +346,7 @@ function game(){
   });
  // ctx.clearRect(transWidth,0,spriteWidth*2,canvas.height);  
   //worker.postMessage(entities);
-  getFPS();
+  //getFPS();
   //var endTime = new Date();
   //console.log(endTime.getTime()-startTime.getTime());
   if(gameIsRunning){
@@ -353,6 +355,10 @@ function game(){
 }
 function gameEnd(){
   //clearInterval(interval);
+  if(score>achievements.highscore){
+    achievements.highscore = score;  
+  }
+  localStorage.setItem("achievements",JSON.stringify(achievements));
   audEnd.currentTime = 0;
   audEnd.play();
   audBackground.pause();

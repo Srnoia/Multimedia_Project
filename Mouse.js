@@ -1,10 +1,11 @@
-function Mouse(x,y,dir){
+function Mouse(x,y,dir,spriteSheet){
   this.type = "mouse";
   this.x = x;
   this.y = y;
   this.spriteY = 0;
   this.speed = 2*scaledWidth;
   this.initialSpeed = this.speed;
+  this.spriteSheet = spriteSheet;
   this.dir = dir?dir:0;
   this.chasing = false;
   this.retreating = false;
@@ -19,7 +20,7 @@ function Mouse(x,y,dir){
   this.hitBox.centerY = (this.hitBox.top+this.hitBox.bottom)/2; 
 }
 Mouse.prototype.draw = function(){
-  ctx.drawImage(spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
+  ctx.drawImage(this.spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Mouse.prototype.move = function(){
   if(!powerUps.freeze.active){
@@ -87,6 +88,7 @@ Mouse.prototype.collision = function(){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
+    achievements.miceEaten++;
     audEat.currentTime = 0;
     audEat.play();
     entities.splice(entities.indexOf(this),1);

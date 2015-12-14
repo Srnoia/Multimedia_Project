@@ -9,13 +9,36 @@ var menuOptions = {
     returnHitBox: {left:null,right:null,bottom:null,top:null},
     Resolution:{
       hitBox : {left:null,right:null,bottom:null,top:null},
-      clickEffect: function(){console.log(this)},
-      options:{type:"",min:180,max:screen.width}
+      clickEffect: function(){
+        drawMenu2(menuOptions.Graphics);
+        options.resolution = options.resolution!="scaling"?this.options.options[this.options.options.indexOf(options.resolution)+1]:this.options.options[0];
+        ctx.fillStyle = "#000000";
+        ctx.font = 16*scaledWidth+"px Shojumaru-Regular";
+        ctx.fillText(options.resolution!="scaling"?options.resolution.width+"X"+options.resolution.height:"Fit to screen",canvas.width/2-50*scaledWidth,canvas.height/2);
+        localStorage.setItem("options",JSON.stringify(options));
+      },
+      options:{type:"select",options:[{width:10*mazeWidth,height:10*mazeHeight},
+      {width:20*mazeWidth,height:20*mazeHeight},
+      {width:30*mazeWidth,height:30*mazeHeight}, 
+      {width:40*mazeWidth,height:40*mazeHeight},
+      {width:50*mazeWidth,height:50*mazeHeight},
+      {width:100*mazeWidth,height:100*mazeHeight},
+      {width:150*mazeWidth,height:150*mazeHeight},
+      {width:200*mazeWidth,height:200*mazeHeight},
+      "scaling"]
+      }
     },
     Textures:{
       hitBox : {left:null,right:null,bottom:null,top:null},
-      clickEffect: function(){console.log(this)},
-      options:{type:"select",options:['low','medium','high']}
+      clickEffect: function(){
+        drawMenu2(menuOptions.Graphics);
+        options.textures = options.textures!="auto"?this.options.options[this.options.options.indexOf(options.textures)+1]:this.options.options[0];
+        ctx.fillStyle = "#000000";
+        ctx.font = 16*scaledWidth+"px Shojumaru-Regular";
+        ctx.fillText(options.textures!="auto"?options.textures+"X"+options.textures:"auto",canvas.width/2-50*scaledWidth,canvas.height/2);
+        localStorage.setItem("options",JSON.stringify(options));
+      },
+      options:{type:"select",options:[10,20,30,40,50,100,150,200,"auto"]}
     }
   },
   Audio: {
@@ -77,8 +100,16 @@ var menuOptions = {
     hitBox : {left:null,right:null,bottom:null,top:null},
     header:"OTHER",
     clickEffect: function(){drawMenu2(menuOptions.Other)},
-    selections:["About","Credits"],
+    selections:["Achievements","Stats","About","Credits"],
     returnHitBox: {left:null,right:null,bottom:null,top:null},
+    Achievements:{
+      hitBox: {left:null,right:null,bottom:null,top:null},
+      clickEffect: function(){viewAchievements()}
+    },
+    Stats:{
+      hitBox: {left:null,right:null,bottom:null,top:null},
+      clickEffect: function(){viewStats()}
+    },
     About:{
       hitBox : {left:null,right:null,bottom:null,top:null},
       clickEffect: function(){console.log(this)},
@@ -176,8 +207,30 @@ function drawMenu2(menuObject){
   //ctx.globalAlpha = 1;
   ctx.drawImage(menuBack,canvas.width/2-(100*scaledWidth)-translate,canvas.height/2-(130*scaledHeight),menuWidth,menuHeight);
   //ctx.globalAlpha = 1;
-  for(var i=0,current;i<menuObject.selections.length;i++){
-    if(i<menuObject.selections.length-1){
+  if(menuObject.header == "MENU"){
+    for(var i=0,current;i<menuObject.selections.length;i++){
+      if(i<menuObject.selections.length-1){
+        current = menuObject[menuObject.selections[i]];
+        current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
+        current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
+        current.hitBox.top = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-(menuSeparation-(menuSeparation*i));
+        current.hitBox.bottom = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-(menuSeparation-(menuSeparation*i))+buttonHeight; 
+        ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
+        current.hitBox.left,current.hitBox.top,buttonWidth,buttonHeight);
+      }
+      else{
+        current = menuObject[menuObject.selections[i]];
+        current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
+        current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
+        current.hitBox.top = (canvas.height/2)+(menuHeight/2)-buttonHeight;
+        current.hitBox.bottom = (canvas.height/2)+(menuHeight/2); 
+        ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
+        current.hitBox.left,current.hitBox.top,buttonWidth,buttonHeight);    
+      }
+    }
+  }
+  if(menuObject.header!='MENU'){
+    for(var i=0,current;i<menuObject.selections.length;i++){
       current = menuObject[menuObject.selections[i]];
       current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
       current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
@@ -186,17 +239,6 @@ function drawMenu2(menuObject){
       ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
       current.hitBox.left,current.hitBox.top,buttonWidth,buttonHeight);
     }
-    else{
-      current = menuObject[menuObject.selections[i]];
-      current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
-      current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
-      current.hitBox.top = (canvas.height/2)+(menuHeight/2)-buttonHeight;
-      current.hitBox.bottom = (canvas.height/2)+(menuHeight/2); 
-      ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
-      current.hitBox.left,current.hitBox.top,buttonWidth,buttonHeight);    
-    }
-  }
-  if(menuObject.header!='MENU'){
     menuObject.returnHitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
     menuObject.returnHitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
     menuObject.returnHitBox.top = (canvas.height/2)+(menuHeight/2)-buttonHeight;
@@ -238,4 +280,10 @@ function popupAbout(){
 }
 function popupCredits(){
   console.log("credits");
+}
+function viewAchievements(){
+
+}
+function viewStats(){
+
 }

@@ -34,7 +34,7 @@ function drawMap(map){
     })
   });
 }
-function generateMap(first){
+function generateMap(first,wallSpriteSheet){
   var mapPointers = [],
       mapArray = Array.apply(null,Array(mazeWidth)).map(function(e){return Array.apply(null,Array(mazeHeight)).map(function(e){return null})}),
       tempMaze = Array.apply(null,Array(mazeWidth)).map(function(e){return []});
@@ -255,7 +255,7 @@ function generateMap(first){
         tempMaze[x].push(new Rail(x*spriteWidth,y*spriteHeight));
       }
       else{
-        tempMaze[x].push(new Wall(x*spriteWidth,y*spriteHeight,randX,randY));
+        tempMaze[x].push(new Wall(x*spriteWidth,y*spriteHeight,randX,randY,wallSpriteSheet?wallSpriteSheet:spriteSheets[0]));
       }
     });
   }); 
