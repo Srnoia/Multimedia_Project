@@ -37,13 +37,21 @@ function replay(){
 function restart(){
   //clearInterval(interval);
   level = 1;
-  spriteSheets = [spriteSheet,spriteSheet2];
+  backGround = backGrounds[0];
+  spriteSheets = [].concat(initialSpriteSheets);
+  backGroundSounds = [].concat(initialBackGroundSounds);
+  audBackground = backGroundSounds[0];
   audBackground.currentTime = 0;
   audBackground.play();
-  audBackground.addEventListener("timeupdate",loop,false);
+  //audBackground.addEventListener("timeupdate",loop,false);
   audStart.currentTime = 0;
   audStart.play();
-  var keys = Object.keys(powerUps);
+  clickEvents.forEach(function(e){
+    canvas.removeEventListener("click",e,true);
+    canvas.removeEventListener("mousedown",e,true);
+  });
+  canvas.addEventListener("click",touchDown,true);                 
+  var keys = Object.keys(powerUps);  
   keys.forEach(function(e){
     powerUps[e].active = false;
     powerUps[e].timer = null;
@@ -91,13 +99,18 @@ function translatePulse(){
   });
   maze.shift();
   if(!mazeBuffer[0].length){
-    achievements.levelsProgressed++;
+    achievements.increaseLevel();
     level++;
-    if(level%10==0){
+    if(level%5==0){
       spriteSheets.push(spriteSheets.shift());
+      audBackground.pause();
+      backGroundSounds.push(backGroundSounds.shift());
+      audBackground = backGroundSounds[0];
+      audBackground.currentTime = 0;
+      audBackground.play();
     }
     mazeBuffer.shift();
-    mazeBuffer.push(generateMap(null,level%10==9?spriteSheets[1]:null));
+    mazeBuffer.push(generateMap(null,level%5==4?spriteSheets[1]:null));
     if(Math.abs(scrollSpeed)<hero.initialSpeed-(1*scaledWidth)){scrollSpeed -= 0.03*scaledWidth;}
     if(dogSpawnChance>50){dogSpawnChance-=3;}
     if(mouseSpawnChance>40){mouseSpawnChance-=3;}
@@ -175,7 +188,6 @@ function Timeout(delay,callback,args,caller){
   }
 }
 function loop(e){
-  //console.log(e);
   if(audBackground.currentTime >= audBackground.duration-0.5){
     audBackground.currentTime = 0;
   }
@@ -193,4 +205,9 @@ function getNearestSprite(){
     }
   }
   return nearest;
+}
+
+function increaseScore(amount){
+  score += amount;
+  achievements.increaseScore(amount);
 }

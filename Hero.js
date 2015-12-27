@@ -29,6 +29,15 @@ Hero.prototype.move = function(){
     handlePowerUp(this.rail.powerUp);
     this.rail.powerUp = null;
   }
+  if(this.rail){
+    if(!achievements.achievements.winter.unlocked&&this.rail.backIndex==1){
+      achievements.achievements.winter.onAchieveWinter();
+    }
+    if(!achievements.achievements.library.unlocked&&this.rail.backIndex==2){
+      achievements.achievements.library.onAchieveLibrary();
+    }
+    backGround = backGrounds[this.rail.backIndex];
+  }
   this.x<0-spriteWidth-translate?gameEnd():null;
   this.x>transWidth-spriteWidth?(this.dir=0,this.x=this.rail.x,this.y=this.rail.y):null;
   this.y>canvas.height?this.y=0:null;

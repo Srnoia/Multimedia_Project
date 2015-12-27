@@ -252,7 +252,9 @@ function generateMap(first,wallSpriteSheet){
   mapArray.forEach(function(e,x){
     e.forEach(function(e,y){
       if(e==1){
-        tempMaze[x].push(new Rail(x*spriteWidth,y*spriteHeight));
+        tempMaze[x].push(new Rail(x*spriteWidth,y*spriteHeight,null,wallSpriteSheet?
+        (wallSpriteSheet.src.match(/Sheet(\d)/)?(wallSpriteSheet.src.match(/Sheet(\d)/)[1]-1):0):
+        (spriteSheets[0].src.match(/Sheet(\d)/)?(spriteSheets[0].src.match(/Sheet(\d)/)[1]-1):0)));
       }
       else{
         tempMaze[x].push(new Wall(x*spriteWidth,y*spriteHeight,randX,randY,wallSpriteSheet?wallSpriteSheet:spriteSheets[0]));

@@ -1,6 +1,7 @@
-function Rail(x,y,type){
+function Rail(x,y,type,backIndex){
   this.x = x;
   this.y = y;
+  this.backIndex = backIndex?backIndex:0;
   this.collisionArray = [];
   this.solid = false;
   this.type = type|0;

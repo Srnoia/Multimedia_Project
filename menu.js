@@ -4,38 +4,62 @@ var menuOptions = {
   Graphics: {
     hitBox : {left:null,right:null,bottom:null,top:null},
     header:"GRAPHICS",
-    clickEffect: function(){drawMenu2(menuOptions.Graphics);},
+    clickEffect: function(){drawMenu2(menuOptions.Graphics);this.Resolution.draw();this.Textures.draw();},
     selections:["Resolution","Textures"],
     returnHitBox: {left:null,right:null,bottom:null,top:null},
     Resolution:{
       hitBox : {left:null,right:null,bottom:null,top:null},
-      clickEffect: function(){
-        drawMenu2(menuOptions.Graphics);
-        options.resolution = options.resolution!="scaling"?this.options.options[this.options.options.indexOf(options.resolution)+1]:this.options.options[0];
+      draw: function(){
+        //ctx.clearRect(this.hitBox.left,this.hitBox.top+60*scaledWidth,140*scaledWidth,30*scaledWidth);
         ctx.fillStyle = "#000000";
         ctx.font = 16*scaledWidth+"px Shojumaru-Regular";
+        ctx.fillText(options.resolution!="scaling"?options.resolution.width+"X"+options.resolution.height:"Fit to screen",
+        this.hitBox.left,this.hitBox.top+60*scaledWidth);  
+      },
+      clickEffect: function(){
+        drawMenu2(menuOptions.Graphics);
+        var number = (options.resolution.width/100)/3;
+        var num2 = ~~(~~(number));
+        var str1 = (String(num2)[1]?5:1);
+        var str2 = (String(num2-(String(num2)[1]?5:0))[1]?5:0);
+        var str3 = num2-str1-str2; 
+        options.resolution = options.resolution!="scaling"?this.options.options[(str3-(String(str3)[1]?4:0))+1]:this.options.options[0];
+        /*ctx.fillStyle = "#000000";
+        ctx.font = 16*scaledWidth+"px Shojumaru-Regular";
         ctx.fillText(options.resolution!="scaling"?options.resolution.width+"X"+options.resolution.height:"Fit to screen",canvas.width/2-50*scaledWidth,canvas.height/2);
+        */
+        this.draw();
+        menuOptions.Graphics.Textures.draw();
         localStorage.setItem("options",JSON.stringify(options));
       },
-      options:{type:"select",options:[{width:10*mazeWidth,height:10*mazeHeight},
-      {width:20*mazeWidth,height:20*mazeHeight},
-      {width:30*mazeWidth,height:30*mazeHeight}, 
-      {width:40*mazeWidth,height:40*mazeHeight},
-      {width:50*mazeWidth,height:50*mazeHeight},
-      {width:100*mazeWidth,height:100*mazeHeight},
-      {width:150*mazeWidth,height:150*mazeHeight},
-      {width:200*mazeWidth,height:200*mazeHeight},
+      options:{type:"select",options:[{width:320,height:240},
+      {width:640,height:480},
+      {width:960,height:720}, 
+      {width:1280,height:960},
+      {width:1600,height:1200},
+      {width:3200,height:2400},
+      {width:4800,height:3600},
+      {width:6400,height:4800},
       "scaling"]
       }
     },
     Textures:{
       hitBox : {left:null,right:null,bottom:null,top:null},
+      draw: function(){
+        ctx.fillStyle = "#000000";
+        ctx.font = 16*scaledWidth+"px Shojumaru-Regular";
+        ctx.fillText(options.textures!="auto"?options.textures+"X"+options.textures:"auto",
+        this.hitBox.left,this.hitBox.top+60*scaledWidth);  
+      },
       clickEffect: function(){
         drawMenu2(menuOptions.Graphics);
         options.textures = options.textures!="auto"?this.options.options[this.options.options.indexOf(options.textures)+1]:this.options.options[0];
-        ctx.fillStyle = "#000000";
+        /*ctx.fillStyle = "#000000";
         ctx.font = 16*scaledWidth+"px Shojumaru-Regular";
         ctx.fillText(options.textures!="auto"?options.textures+"X"+options.textures:"auto",canvas.width/2-50*scaledWidth,canvas.height/2);
+        */
+        this.draw();
+        menuOptions.Graphics.Resolution.draw();
         localStorage.setItem("options",JSON.stringify(options));
       },
       options:{type:"select",options:[10,20,30,40,50,100,150,200,"auto"]}
@@ -44,22 +68,75 @@ var menuOptions = {
   Audio: {
     hitBox : {left:null,right:null,bottom:null,top:null},
     header:"AUDIO",
-    clickEffect: function(){drawMenu2(menuOptions.Audio)},
+    clickEffect: function(){
+      drawMenu2(menuOptions.Audio);
+      this.Main.draw();
+      this.Effects.draw();
+      this.Music.draw();
+    },
     selections:["Main","Effects","Music"],
     returnHitBox: {left:null,right:null,bottom:null,top:null},
     Main:{
       hitBox : {left:null,right:null,bottom:null,top:null},
-      clickEffect: function(){console.log(this)},
+      sliderHitBox: {left:null,right:null,bottom:null,top:null},
+      draw: function(){
+        ctx.drawImage(menuSheet,this.image.x+80,3120,this.image.width-165,32,this.hitBox.left,this.hitBox.bottom-((45*scaledWidth)/2),
+          140*scaledWidth,10*scaledWidth);  
+        ctx.drawImage(menuSheet,238,3160,30,400,this.hitBox.left+((this.hitBox.right-this.hitBox.left)*options.volumeMain)-10*scaledWidth,
+          this.hitBox.bottom-((52*scaledWidth)/2),10*scaledWidth,120*scaledWidth);
+      },
+      listener: function(e){
+        var clickX = e.clientX+scrollX;
+        var clickY = e.clientY+scrollY;
+        console.log(clickX);        
+      },
+      release: function(){
+        canvas.removeEventListener("mousemove",menuOptions.Audio.Main.listener,false);
+        canvas.removeEventListener("mouseup",menuOptions.Audio.Main.release,false);
+      },
+      clickEffect: function(){
+        canvas.addEventListener("mousemove",this.listener,false);
+        canvas.addEventListener("mouseup",this.release,false);
+        drawMenu2(menuOptions.Audio);
+        this.draw();
+        menuOptions.Audio.Effects.draw();
+        menuOptions.Audio.Music.draw();
+        console.log("test");
+      },
       options:[{type:"slider",min:0,max:1}]
     },
     Effects:{
       hitBox : {left:null,right:null,bottom:null,top:null},
-      clickEffect: function(){console.log(this)},
+      sliderHitBox: {left:null,right:null,bottom:null,top:null},
+      clickEffect: function(){
+        drawMenu2(menuOptions.Audio);
+        this.draw();
+        menuOptions.Audio.Main.draw();
+        menuOptions.Audio.Music.draw();      
+      },
+      draw: function(){
+        ctx.drawImage(menuSheet,this.image.x+80,3120,this.image.width-165,32,this.hitBox.left,this.hitBox.bottom-((45*scaledWidth)/2),
+          140*scaledWidth,10*scaledWidth);
+        ctx.drawImage(menuSheet,238,3160,30,400,this.hitBox.left+((this.hitBox.right-this.hitBox.left)*options.volumeMain)-10*scaledWidth,
+          this.hitBox.bottom-((52*scaledWidth)/2),10*scaledWidth,120*scaledWidth);  
+      },
       options:[{type:"slider",min:0,max:1}]
     },
     Music:{
       hitBox : {left:null,right:null,bottom:null,top:null},
-      clickEffect: function(){console.log(this)},
+      sliderHitBox: {left:null,right:null,bottom:null,top:null},
+      clickEffect: function(){
+        drawMenu2(menuOptions.Audio);
+        this.draw();
+        menuOptions.Audio.Main.draw();
+        menuOptions.Audio.Effects.draw();
+      },
+      draw: function(){
+        ctx.drawImage(menuSheet,this.image.x+80,3120,this.image.width-165,32,this.hitBox.left,this.hitBox.bottom-((45*scaledWidth)/2),
+          140*scaledWidth,10*scaledWidth);
+        ctx.drawImage(menuSheet,238,3160,30,400,this.hitBox.left+((this.hitBox.right-this.hitBox.left)*options.volumeMain)-10*scaledWidth,
+          this.hitBox.bottom-((52*scaledWidth)/2),10*scaledWidth,120*scaledWidth);  
+      },
       options:[{type:"slider",min:0,max:1}]
     }
   },
@@ -128,7 +205,7 @@ var menuOptions = {
     options:{type:"button",onclick:pauseGame}
   }
 } 
-var clickEvents = [menu1Click,touchDown],
+var clickEvents = [menu1Click,touchDown,achieveMenu],
     lastCall,
     returnImg,
     menuSheet = new Image(),
@@ -229,13 +306,35 @@ function drawMenu2(menuObject){
       }
     }
   }
-  if(menuObject.header!='MENU'){
+  else if(menuObject.header=="AUDIO"){
     for(var i=0,current;i<menuObject.selections.length;i++){
       current = menuObject[menuObject.selections[i]];
       current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
       current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
-      current.hitBox.top = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-(menuSeparation-(menuSeparation*i));
-      current.hitBox.bottom = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-(menuSeparation-(menuSeparation*i))+buttonHeight; 
+      current.hitBox.top = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-
+        (menuSeparation-(menuSeparation*i))+(i*buttonHeight);
+      current.hitBox.bottom = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-
+        (menuSeparation-(menuSeparation*i))+buttonHeight+(i*buttonHeight)+buttonHeight; 
+      ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
+      current.hitBox.left,current.hitBox.top,buttonWidth,buttonHeight);
+      current.sliderHitBox.left;
+    }
+    menuObject.returnHitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
+    menuObject.returnHitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
+    menuObject.returnHitBox.top = (canvas.height/2)+(menuHeight/2)-buttonHeight;
+    menuObject.returnHitBox.bottom = (canvas.height/2)+(menuHeight/2);    
+    ctx.drawImage(menuSheet, returnImg.x,returnImg.y,returnImg.width,returnImg.height,
+    menuObject.returnHitBox.left,menuObject.returnHitBox.top,buttonWidth,buttonHeight);  
+  }
+  else{
+    for(var i=0,current;i<menuObject.selections.length;i++){
+      current = menuObject[menuObject.selections[i]];
+      current.hitBox.left = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2;
+      current.hitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
+      current.hitBox.top = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-
+        (menuSeparation-(menuSeparation*i))+(menuObject.header=="GRAPHICS"?(i*buttonHeight):0);
+      current.hitBox.bottom = (canvas.height/2)-(menuHeight/2)+buttonHeight+(i*buttonHeight)-
+        (menuSeparation-(menuSeparation*i))+buttonHeight+(menuObject.header=="GRAPHICS"?(i*buttonHeight):0); 
       ctx.drawImage(menuSheet, current.image.x,current.image.y,current.image.width,current.image.height,
       current.hitBox.left,current.hitBox.top,buttonWidth,buttonHeight);
     }
@@ -243,18 +342,20 @@ function drawMenu2(menuObject){
     menuObject.returnHitBox.right = -translate+(canvas.width/2)-(buttonWidth/2)+hitBoxMargin/2+buttonWidth;
     menuObject.returnHitBox.top = (canvas.height/2)+(menuHeight/2)-buttonHeight;
     menuObject.returnHitBox.bottom = (canvas.height/2)+(menuHeight/2);    
-    console.log((canvas.height/2)+(menuHeight/2));
     ctx.drawImage(menuSheet, returnImg.x,returnImg.y,returnImg.width,returnImg.height,
     menuObject.returnHitBox.left,menuObject.returnHitBox.top,buttonWidth,buttonHeight);
   }
   clickEvents.forEach(function(e){
     canvas.removeEventListener("click",e,true);
+    canvas.removeEventListener("mousedown",e,true);
   });
-  canvas.addEventListener("click", menu1Click,true);
+  setTimeout(function(){
+    menuObject.header=="AUDIO"?canvas.addEventListener("mousedown",menu1Click,true):canvas.addEventListener("click", menu1Click,true);
+  },200);
 }
 function menu1Click(e){
-  var clickX = e.clientX;
-  var clickY = e.clientY;
+  var clickX = e.clientX+scrollX;
+  var clickY = e.clientY+scrollY;
   var menuHeight = 300*scaledWidth;
   var menuWidth = 200*scaledWidth;
   var current;
@@ -282,8 +383,68 @@ function popupCredits(){
   console.log("credits");
 }
 function viewAchievements(){
-
+  clickEvents.forEach(function(e){
+    canvas.removeEventListener("click",e,true);
+  });
+  var achievWidth = 150*scaledWidth;
+  var achievHeight = 150*scaledWidth;
+  var seperation = 5*scaledWidth;
+  var yAx = 0;
+  var xAx = seperation;
+  canvas.addEventListener("click",achieveMenu,true);  
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(0-translate,0,canvas.width,canvas.height);
+  for(var i=0,cur=achievements.achievements,keys=Object.keys(cur);i<keys.length;i++){
+    if(i!=0&&i%4==0){
+      console.log(yAx);
+      yAx += achievHeight+seperation;
+      xAx = seperation; 
+    }
+    ctx.globalAlpha = cur[keys[i]].unlocked?1:0.5;
+    ctx.drawImage(powerUpIcons,cur[keys[i]].icon.x*powerUpSpriteWidth,cur[keys[i]].icon.y*powerUpSpriteHeight,
+      powerUpSpriteWidth,powerUpSpriteHeight,xAx-translate,yAx,achievWidth,achievHeight);
+    xAx += achievWidth+seperation;
+  }
+  ctx.globalAlpha = 1;
 }
 function viewStats(){
-
+  clickEvents.forEach(function(e){
+    canvas.removeEventListener("click",e,true);
+  });
+  canvas.addEventListener("click",achieveMenu,true);  
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(0-translate,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = 24*scaledWidth+"px Shojumaru-Regular";
+  ctx.fillText("STATS",canvas.width/2-60*scaledWidth-translate,25*scaledWidth);
+  ctx.font = 16*scaledWidth+"px Shojumaru-Regular";
+  ctx.fillText("Total mice eaten",canvas.width/2-100*scaledWidth-translate,100*scaledWidth);
+  ctx.fillText(achievements.miceEaten,canvas.width/2-30*scaledWidth-translate,120*scaledWidth);
+  ctx.fillText("Total dogs eaten",canvas.width/2-100*scaledWidth-translate,160*scaledWidth);
+  ctx.fillText(achievements.dogsEaten,canvas.width/2-30*scaledWidth-translate,180*scaledWidth);
+  ctx.fillText("Total levels progressed",canvas.width/2-140*scaledWidth-translate,220*scaledWidth);
+  ctx.fillText(achievements.levelsProgressed,canvas.width/2-30*scaledWidth-translate,240*scaledWidth);
+  ctx.fillText("Total powerups picked",canvas.width/2-135*scaledWidth-translate,280*scaledWidth);
+  ctx.fillText(achievements.powerUpsPicked,canvas.width/2-30*scaledWidth-translate,300*scaledWidth);
+  ctx.fillText("Total score accumulated",canvas.width/2-140*scaledWidth-translate,340*scaledWidth);
+  ctx.fillText(achievements.totalScore,canvas.width/2-30*scaledWidth-translate,360*scaledWidth);
+  ctx.fillText("HIGHSCORE",canvas.width/2-70*scaledWidth-translate,400*scaledWidth);
+  ctx.fillText(achievements.highscore,canvas.width/2-30*scaledWidth-translate,420*scaledWidth);
+}
+function achieveMenu(e){
+  ctx.fillStyle = "#1122FF";
+  ctx.drawImage(backGround, 0-translate, 0, canvas.width, canvas.height);
+  ctx.font = 15*scaledWidth+"px Verdana";
+  ctx.fillStyle = "#000000";
+  ctx.fillText("SCORE: "+score+"    LEVEL: "+level,5-translate,35*scaledHeight);
+  ctx.fill();
+  maze.forEach(function(el,x){
+    el.forEach(function(elem){
+      elem.draw(x*spriteWidth);      
+    })
+  });
+  entities.forEach(function(e){  
+    e.draw();                                        
+  });
+  drawMenu2(menuOptions.Other);
 }

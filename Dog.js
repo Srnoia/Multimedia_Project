@@ -23,7 +23,7 @@ Dog.prototype.draw = function(){
   ctx.drawImage(this.spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Dog.prototype.move = function(){
-  if(!powerUps.freeze.active){
+  if(!powerUps.freeze||!powerUps.freeze.active){
     this.timer==20?this.timer=0:null;
     !this.timer?(this.movement = this.movementObj[~~(Math.random()*4)+1],this.timer++):this.timer++;
     if(!this.stopped){  
@@ -32,10 +32,10 @@ Dog.prototype.move = function(){
       this.dir==3?this.y+=this.speed:null;
       this.dir==4?this.y-=this.speed:null;
     }
-    if(powerUps.radioActive.active&&this.hitBox.centerX<hero.hitBox.centerX+powerUps.radioActive.repelRadius&&
+    if(powerUps.radioActive&&(powerUps.radioActive.active&&this.hitBox.centerX<hero.hitBox.centerX+powerUps.radioActive.repelRadius&&
        this.hitBox.centerX>hero.hitBox.centerX-powerUps.radioActive.repelRadius&&
        this.hitBox.centerY>hero.hitBox.centerY-powerUps.radioActive.repelRadius&&
-       this.hitBox.centerY<hero.hitBox.centerY+powerUps.radioActive.repelRadius)
+       this.hitBox.centerY<hero.hitBox.centerY+powerUps.radioActive.repelRadius))
     {
       this.retreat();
       this.speed = this.initialSpeed-0.5*scaledWidth;
@@ -90,13 +90,13 @@ Dog.prototype.collision = function(){
   for(var i=0;i<this.collisionArray.length-1;i++){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }
-  if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top&&(!powerUps.freeze.active||powerUps.radioActive.active||powerUps.shield.active)){
-    if(powerUps.radioActive.active){
-      achievements.dogsEaten++;
+  if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top&&((!powerUps.freeze||!powerUps.freeze.active)||(powerUps.radioActive&&powerUps.radioActive.active)||powerUps.shield.active)){
+    if(powerUps.radioActive&&powerUps.radioActive.active){
+      achievements.increaseDogs();
       audEat.currentTime = 0;
       audEat.play();      
       entities.splice(entities.indexOf(this),1);
-      score++;
+      increaseScore(2);
     }
     else if(powerUps.shield.active){
       entities.splice(entities.indexOf(this),1);

@@ -1,3 +1,168 @@
+function addRadioActive(){
+  powerUps.radioActive = {
+    active:false,
+    name:"radioActive",
+    sound:audRadioActive,
+    description:"Makes mice and dogs run away from you for 5 seconds",
+    repelRadius:6*spriteWidth,
+    timer:null,
+    flag:false,
+    duration:450,
+    icon: {y:1,x:2,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
+      positionX:(0*iconWidth)+iconBlankSpace,positionY:(4*iconHeight)+iconBlankSpace,
+      draw:function(){
+        this.parent = powerUps.radioActive;
+        joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
+          this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
+        this.drawDurationBar();
+      }, 
+      drawDurationBar:function(){
+        if(this.parent.active){
+          /*joyCtx.fillStyle = "#FF0000";
+          joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);
+          joyCtx.fillStyle = "#00FF00";
+          joyCtx.fillRect(this.positionX,
+          this.positionY+iconHeight-iconBlankSpace/2,iconWidth*(this.parent.timer.delay/this.parent.duration),iconBlankSpace);*/
+          
+          joyCtx2.save();
+          if(this.parent.flag){
+            joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+            //joyCtx2.globalAlpha = 0.3;
+            joyCtx2.fillStyle = "#00FF00";
+            joyCtx2.beginPath();
+            joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2,Math.PI*2,0);
+            joyCtx2.closePath();
+            joyCtx2.fill();          
+            joyCtx2.beginPath();
+            joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/3,Math.PI*2,0);
+            joyCtx2.closePath();
+            joyCtx2.clip();
+            joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+            this.parent.flag = false;
+          }
+          joyCtx2.beginPath();
+          joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2+1,1.5*Math.PI,1.5*Math.PI-((2*Math.PI)*(this.parent.timer.delay/this.parent.duration)),false);
+          joyCtx2.lineTo(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2));
+          joyCtx2.clip();
+          joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+          joyCtx2.restore();             
+        }
+        else{
+       /*   joyCtx.fillStyle = "#FF0000";
+          joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);  */
+        }
+      }
+    },
+    activate:function(){
+      this.active = true;
+      this.timer = null;
+      this.flag = true;
+      hero.spriteY = 7;
+      this.timer = {duration:this.duration,delay:this.duration,parent:this,callback:function(){
+        this.active=false;
+        this.timer=null;
+        if(powerUps.shield.active){
+          hero.spriteY = 10;
+        }
+        else if(powerUps.catnip.active){
+          hero.spriteY = 15;
+        }
+        else{
+          hero.spriteY = 2;
+        }
+      },args:null,caller:this};
+      this.timer.tick = function(){
+        this.delay--;
+        this.parent.icon.drawDurationBar();        
+        if(this.delay>this.duration/2){}
+        else if(this.delay>this.duration/4){
+          this.delay%30==0?(hero.spriteY==7?hero.spriteY=2:hero.spriteY=7):null;
+        }                    
+        else if(this.delay>0){
+          this.delay%10==0?(hero.spriteY==7?hero.spriteY=2:hero.spriteY=7):null;
+        }            
+        else{
+          this.callback.call(this.caller,this.args);
+        }
+      }          
+    }       
+  }
+}
+function addFreeze(){
+  powerUps.freeze = {
+    active:false,
+    name:"freeze",
+    sound:audIce,
+    description:"Makes mice and dog solid frozen for 7.5 seconds",
+    timer:null,
+    flag:false,
+    duration:450,
+    icon: {y:1,x:1,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
+      positionX:(1*iconWidth)+iconBlankSpace*2,positionY:(1*iconHeight)+iconBlankSpace,
+      draw:function(){
+        this.parent = powerUps.freeze;
+        joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
+          this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
+        this.drawDurationBar();
+      }, 
+      drawDurationBar:function(){
+        if(this.parent.active){
+          /*joyCtx.fillStyle = "#FF0000";
+          joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);
+          joyCtx.fillStyle = "#00FF00";
+          joyCtx.fillRect(this.positionX,
+          this.positionY+iconHeight-iconBlankSpace/2,iconWidth*(this.parent.timer.delay/this.parent.duration),iconBlankSpace);*/
+          
+          joyCtx2.save();
+          if(this.parent.flag){
+            joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+            //joyCtx2.globalAlpha = 0.3;
+            joyCtx2.fillStyle = "#00FF00";
+            joyCtx2.beginPath();
+            joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2,Math.PI*2,0);
+            joyCtx2.closePath();
+            joyCtx2.fill();
+            joyCtx2.beginPath();
+            joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/3,Math.PI*2,0);
+            joyCtx2.closePath();
+            joyCtx2.clip();
+            joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+            this.parent.flag = false;
+          }
+          joyCtx2.beginPath();
+          joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2+1,1.5*Math.PI,1.5*Math.PI-((2*Math.PI)*(this.parent.timer.delay/this.parent.duration)),false);
+          joyCtx2.lineTo(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2));
+          joyCtx2.clip();
+          joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
+          joyCtx2.restore();             
+        }
+        else{
+       /*   joyCtx.fillStyle = "#FF0000";
+          joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);  */
+        }
+      }
+    },
+    activate:function(){
+      this.active = true;
+      this.timer = null;
+      this.flag = true;
+    //  this.timer = new Timeout(this.duration,function(){this.active=false;this.timer=null;},null,this);
+      this.timer = {duration:this.duration,parent:this,delay:this.duration,
+        callback:function(){
+          this.active=false;
+          this.timer=null;
+        },args:null,caller:this
+      };
+      this.timer.tick = function(){
+        this.delay--;
+        this.parent.icon.drawDurationBar();
+        if(this.delay<=0){  
+          this.callback.call(this.caller,this.args);
+        }
+      }
+    }
+  };
+}
 function initializePowerUps(){
   powerUps = {
     catnip: {
@@ -57,7 +222,7 @@ function initializePowerUps(){
       activate:function(){
         this.flag = true;
         this.active = true;
-        hero.spriteY = 15;
+        hero.spriteY = hero.spriteY==2?15:hero.spriteY;
         this.fadeArray = [];
         hero.speed = hero.initialSpeed+1*scaledWidth;
         this.timer = null;
@@ -68,7 +233,7 @@ function initializePowerUps(){
             if(powerUps.shield.active){
               hero.spriteY = 10;
             }
-            else if(powerUps.radioActive.active){
+            else if(powerUps.radioActive&&powerUps.radioActive.active){
               hero.spriteY = 7;
             }
             else{
@@ -300,7 +465,7 @@ function initializePowerUps(){
             if(powerUps.catnip.active){
               hero.spriteY = 15;
             }
-            else if(powerUps.radioActive.active){
+            else if(powerUps.radioActive&&powerUps.radioActive.active){
               hero.spriteY = 7;
             }
             else{
@@ -323,167 +488,6 @@ function initializePowerUps(){
         }
       }       
     },
-    radioActive: {
-      active:false,
-      name:"radioActive",
-      sound:audRadioActive,
-      description:"Makes mice and dogs run away from you for 5 seconds",
-      repelRadius:6*spriteWidth,
-      timer:null,
-      flag:false,
-      duration:300,
-      icon: {y:1,x:2,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
-        positionX:(0*iconWidth)+iconBlankSpace,positionY:(4*iconHeight)+iconBlankSpace,
-        draw:function(){
-          this.parent = powerUps.radioActive;
-          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
-            this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
-          this.drawDurationBar();
-        }, 
-        drawDurationBar:function(){
-          if(this.parent.active){
-            /*joyCtx.fillStyle = "#FF0000";
-            joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);
-            joyCtx.fillStyle = "#00FF00";
-            joyCtx.fillRect(this.positionX,
-            this.positionY+iconHeight-iconBlankSpace/2,iconWidth*(this.parent.timer.delay/this.parent.duration),iconBlankSpace);*/
-            
-            joyCtx2.save();
-            if(this.parent.flag){
-              joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
-              //joyCtx2.globalAlpha = 0.3;
-              joyCtx2.fillStyle = "#00FF00";
-              joyCtx2.beginPath();
-              joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2,Math.PI*2,0);
-              joyCtx2.closePath();
-              joyCtx2.fill();          
-              joyCtx2.beginPath();
-              joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/3,Math.PI*2,0);
-              joyCtx2.closePath();
-              joyCtx2.clip();
-              joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
-              this.parent.flag = false;
-            }
-            joyCtx2.beginPath();
-            joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2+1,1.5*Math.PI,1.5*Math.PI-((2*Math.PI)*(this.parent.timer.delay/this.parent.duration)),false);
-            joyCtx2.lineTo(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2));
-            joyCtx2.clip();
-            joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
-            joyCtx2.restore();             
-          }
-          else{
-         /*   joyCtx.fillStyle = "#FF0000";
-            joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);  */
-          }
-        }
-      },
-      activate:function(){
-        this.active = true;
-        this.timer = null;
-        this.flag = true;
-        hero.spriteY = 7;
-        this.timer = {duration:this.duration,delay:this.duration,parent:this,callback:function(){
-          this.active=false;
-          this.timer=null;
-          if(powerUps.shield.active){
-            hero.spriteY = 10;
-          }
-          else if(powerUps.catnip.active){
-            hero.spriteY = 15;
-          }
-          else{
-            hero.spriteY = 2;
-          }
-        },args:null,caller:this};
-        this.timer.tick = function(){
-          this.delay--;
-          this.parent.icon.drawDurationBar();        
-          if(this.delay>this.duration/2){}
-          else if(this.delay>this.duration/4){
-            this.delay%30==0?(hero.spriteY==7?hero.spriteY=2:hero.spriteY=7):null;
-          }                    
-          else if(this.delay>0){
-            this.delay%10==0?(hero.spriteY==7?hero.spriteY=2:hero.spriteY=7):null;
-          }            
-          else{
-            this.callback.call(this.caller,this.args);
-          }
-        }          
-      }       
-    },
-    freeze:{
-      active:false,
-      name:"freeze",
-      sound:audIce,
-      description:"Makes mize and dog solid frozen for 7.5 seconds",
-      timer:null,
-      flag:false,
-      duration:450,
-      icon: {y:1,x:1,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
-        positionX:(1*iconWidth)+iconBlankSpace*2,positionY:(0*iconHeight),
-        draw:function(){
-          this.parent = powerUps.freeze;
-          joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
-            this.width,this.height,this.positionX,this.positionY,iconWidth,iconHeight);
-          this.drawDurationBar();
-        }, 
-        drawDurationBar:function(){
-          if(this.parent.active){
-            /*joyCtx.fillStyle = "#FF0000";
-            joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);
-            joyCtx.fillStyle = "#00FF00";
-            joyCtx.fillRect(this.positionX,
-            this.positionY+iconHeight-iconBlankSpace/2,iconWidth*(this.parent.timer.delay/this.parent.duration),iconBlankSpace);*/
-            
-            joyCtx2.save();
-            if(this.parent.flag){
-              joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
-              //joyCtx2.globalAlpha = 0.3;
-              joyCtx2.fillStyle = "#00FF00";
-              joyCtx2.beginPath();
-              joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2,Math.PI*2,0);
-              joyCtx2.closePath();
-              joyCtx2.fill();
-              joyCtx2.beginPath();
-              joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/3,Math.PI*2,0);
-              joyCtx2.closePath();
-              joyCtx2.clip();
-              joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
-              this.parent.flag = false;
-            }
-            joyCtx2.beginPath();
-            joyCtx2.arc(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2),iconWidth/2+1,1.5*Math.PI,1.5*Math.PI-((2*Math.PI)*(this.parent.timer.delay/this.parent.duration)),false);
-            joyCtx2.lineTo(this.positionX+(iconWidth/2),this.positionY+(iconHeight/2));
-            joyCtx2.clip();
-            joyCtx2.clearRect(this.positionX,this.positionY,iconWidth,iconHeight);
-            joyCtx2.restore();             
-          }
-          else{
-         /*   joyCtx.fillStyle = "#FF0000";
-            joyCtx.fillRect(this.positionX,this.positionY+iconHeight-iconBlankSpace/2,iconWidth,iconBlankSpace);  */
-          }
-        }
-      },
-      activate:function(){
-        this.active = true;
-        this.timer = null;
-        this.flag = true;
-      //  this.timer = new Timeout(this.duration,function(){this.active=false;this.timer=null;},null,this);
-        this.timer = {duration:this.duration,parent:this,delay:this.duration,
-          callback:function(){
-            this.active=false;
-            this.timer=null;
-          },args:null,caller:this
-        };
-        this.timer.tick = function(){
-          this.delay--;
-          this.parent.icon.drawDurationBar();
-          if(this.delay<=0){  
-            this.callback.call(this.caller,this.args);
-          }
-        }
-      }
-    },
     blindness: {
       active:false,
       name:"blindness",
@@ -493,7 +497,7 @@ function initializePowerUps(){
       timer:null,
       duration:450,
       icon: {y:1,x:3,width:powerUpSpriteWidth,height:powerUpSpriteWidth,
-        positionX:(1*iconWidth)+iconBlankSpace*2,positionY:(1*iconHeight)+iconBlankSpace,
+        positionX:(1*iconWidth)+iconBlankSpace*2,positionY:(0*iconHeight),
         draw:function(){
           this.parent = powerUps.blindness;
           joyCtx.drawImage(powerUpIcons,this.x*this.width,this.y*this.height,
@@ -562,6 +566,7 @@ function handlePowerUp(powerUp){
   powerUps[powerUp].activate();
   powerUps[powerUp].sound.currentTime==0?powerUps[powerUp].sound.play():powerUps[powerUp].sound.currentTime=0,powerUps[powerUp].sound.play();
   effects.push(new FlashImage(30,powerUps[powerUp].icon.x,powerUps[powerUp].icon.y));
+  achievements.increasePowerUps();
 }
 
 function drawIcons(){

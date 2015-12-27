@@ -23,7 +23,7 @@ Mouse.prototype.draw = function(){
   ctx.drawImage(this.spriteSheet, this.dir*spriteScreenWidth, this.spriteY*spriteScreenHeight, spriteScreenWidth, spriteScreenHeight, this.x, this.y, spriteWidth, spriteHeight);
 }
 Mouse.prototype.move = function(){
-  if(!powerUps.freeze.active){
+  if(!powerUps.freeze||!powerUps.freeze.active){
     this.timer==15?this.timer=0:null;
     !this.timer?(this.movement = this.movementObj[~~(Math.random()*4)+1],this.timer++):this.timer++;
     if(!this.stopped){  
@@ -32,10 +32,10 @@ Mouse.prototype.move = function(){
       this.dir==3?this.y+=this.speed:null;
       this.dir==4?this.y-=this.speed:null;
     }
-    if(powerUps.radioActive.active&&this.hitBox.centerX<hero.hitBox.centerX+powerUps.radioActive.repelRadius&&
+    if(powerUps.radioActive&&(powerUps.radioActive.active&&this.hitBox.centerX<hero.hitBox.centerX+powerUps.radioActive.repelRadius&&
        this.hitBox.centerX>hero.hitBox.centerX-powerUps.radioActive.repelRadius&&
        this.hitBox.centerY>hero.hitBox.centerY-powerUps.radioActive.repelRadius&&
-       this.hitBox.centerY<hero.hitBox.centerY+powerUps.radioActive.repelRadius)
+       this.hitBox.centerY<hero.hitBox.centerY+powerUps.radioActive.repelRadius))
     {
       this.retreat();
       this.speed = this.initialSpeed - 1*scaledWidth;
@@ -88,13 +88,13 @@ Mouse.prototype.collision = function(){
     this.collisionArray[i]?this.collisionArray[i].collision(this):null;
   }
   if(hero.hitBox.left<this.hitBox.right&&hero.hitBox.right>this.hitBox.left&&hero.hitBox.top<this.hitBox.bottom&&hero.hitBox.bottom>this.hitBox.top){
-    achievements.miceEaten++;
+    achievements.increaseMice();
     audEat.currentTime = 0;
     audEat.play();
     entities.splice(entities.indexOf(this),1);
     //spawner(Mouse);
     //~~(Math.random()*2)?spawner(Dog):null;
-    score++;
+    increaseScore(1);
     //entities.push(new Mouse(~~(Math.random()*transWidth),~~(Math.random()*canvas.height)));
     //entities.push(new Dog(~~(Math.random()*transWidth),~~(Math.random()*canvas.height)));
   }

@@ -14,12 +14,17 @@ var body,
     mazeHeight = 24,
     maze = Array.apply(null,Array(mazeWidth)).map(function(e){return []}),
     score = 0,
+    backGround,
     spriteSheet = new Image(),
     spriteSheet2 = new Image(),
-    backGround = new Image(),
+    spriteSheet3 = new Image(),
+    backGround1 = new Image(),
+    backGround2 = new Image(),
+    backGround3 = new Image(),
     endScreen = new Image(),
     startScreen = new Image(),
     lastFrame = new Image(),
+    achievement = new Image(),
     joyStick = new Image(),    
     powerUpBox = new Image(),
     powerUpIcons = new Image(),
@@ -27,7 +32,9 @@ var body,
     loadingTree = new Image(),
     arrowSprite = new Image(),
     audAxe = new Audio(),
-    audBackground = new Audio(),
+    audBackground1 = new Audio(),
+    audBackground2 = new Audio(),
+    audBackground3 = new Audio(), 
     audBlind = new Audio(),
     audCheese = new Audio(),
     audEat = new Audio(),
@@ -41,6 +48,9 @@ var body,
     audShieldCollide = new Audio(),
     sounds = [audAxe,audBlind,audCheese,audEat,audEnd,audIce,
       audRadioActive,audSausage,audShield,audSpeed,audStart,audShieldCollide],
+    backGrounds = [backGround1,backGround2,backGround3],
+    backGroundSounds = [audBackground1,audBackground2,audBackground3],
+    initialBackGroundSounds = [audBackground1,audBackground2,audBackground3],
     spriteHeight = 20,
     spriteWidth = 20,
     spriteScreenHeight = 100,
@@ -52,7 +62,8 @@ var body,
     iconWidth,
     iconHeight,
     iconBlankSpace,
-    spriteSheets = [spriteSheet,spriteSheet2],
+    spriteSheets = [spriteSheet,spriteSheet2,spriteSheet3],
+    initialSpriteSheets = [spriteSheet],
     powerUps,
     joyPos,
     knobX,
@@ -116,6 +127,7 @@ var body,
 function preBegin(){
   options = JSON.parse(localStorage.getItem("options"))||options;
   achievements = JSON.parse(localStorage.getItem("achievements"))||achievements;
+  unpack();
   document.querySelector("head").appendChild(style);
   body = document.querySelector("body");
   body.appendChild(canvas);
@@ -169,6 +181,8 @@ function preBegin(){
   loadable++;
   joyStick.src =  "resources/joyStick.png";
   loadable++;
+  achievement.src = "resources/achievement.png";
+  loadable++;
   startScreen.src = "resources/Logo.jpg";
   loadable++;
   endScreen.src = "resources/end.jpg";
@@ -177,13 +191,23 @@ function preBegin(){
   loadable++;
   spriteSheet2.src = "resources/spriteSheet2 "+getNearestSprite()+".png";
   loadable++;
-  backGround.src = "resources/background.jpg";     
+  spriteSheet3.src = "resources/spriteSheet3 "+getNearestSprite()+".png";
+  loadable++;
+  backGround1.src = "resources/background.jpg";     
+  loadable++;
+  backGround2.src = "resources/background2.jpg";
+  loadable++;
+  backGround3.src = "resources/background3.jpg";
   loadable++;
   powerUpBox.src = "resources/powerUpBox.png";   
   loadable++;
   audAxe.src = "resources/sounds/axe.mp3";
   loadable++;
-  audBackground.src = "resources/sounds/background.mp3";
+  audBackground1.src = "resources/sounds/background.mp3";
+  loadable++;
+  audBackground2.src = "resources/sounds/background2.mp3";
+  loadable++;
+  audBackground3.src = "resources/sounds/background3.mp3";
   loadable++;
   audBlind.src = "resources/sounds/blind.mp3";
   loadable++;
@@ -213,9 +237,20 @@ function preBegin(){
     },false);
     e.volume = options.volumeMain*options.volumeEffects;  
   });
-  audBackground.volume = 0;//options.volumeMain*options.volumeMusic;
-  audBackground.addEventListener("loadeddata", function(){
+  audBackground1.volume = options.volumeMain*options.volumeMusic;
+  audBackground2.volume = options.volumeMain*options.volumeMusic;
+  audBackground3.volume = options.volumeMain*options.volumeMusic;
+  audBackground1.addEventListener("loadeddata", function(){
     loading();
+    audBackground1.addEventListener("timeupdate",loop,true);
+  },false);
+  audBackground2.addEventListener("loadeddata", function(){
+    loading();
+    audBackground2.addEventListener("timeupdate",loop,true);
+  },false);
+  audBackground3.addEventListener("loadeddata", function(){
+    loading();
+    audBackground3.addEventListener("timeupdate",loop,true);
   },false);
   joyStick.onload = function(){
     loading();   
@@ -225,6 +260,9 @@ function preBegin(){
     loading();   
   }
   loadingTree.onload = function(){
+    loading();   
+  }
+  achievement.onload = function(){
     loading();   
   }
   arrowSprite.onload = function(){
@@ -245,7 +283,16 @@ function preBegin(){
   spriteSheet2.onload = function(){
     loading();   
   }
-  backGround.onload = function(){
+  spriteSheet3.onload = function(){
+    loading();   
+  }
+  backGround1.onload = function(){
+    loading();   
+  }
+  backGround2.onload = function(){
+    loading();   
+  }
+  backGround3.onload = function(){
     loading();   
   }
   powerUpBox.onload = function(){
@@ -292,6 +339,9 @@ function begin(){
   iconBlankSpace = 10*scaledWidth;
   //drawJoyStick();
   initializePowerUps();
+  achievements.unlocks.forEach(function(e){
+    e.call(null,null);
+  });
   drawIcons();
   knobStartX = knobX;
   knobStartY = knobY;
@@ -355,14 +405,20 @@ function game(){
 }
 function gameEnd(){
   //clearInterval(interval);
+  clickEvents.forEach(function(e){
+    canvas.removeEventListener("click",e,true);
+    canvas.removeEventListener("mousedown",e,true);
+  });
+  canvas.addEventListener("click",touchDown,true);  
   if(score>achievements.highscore){
     achievements.highscore = score;  
   }
+  var highscore = achievements.highscore;
   localStorage.setItem("achievements",JSON.stringify(achievements));
   audEnd.currentTime = 0;
   audEnd.play();
   audBackground.pause();
-  audBackground.removeEventListener("timeupdate",loop,false);  
+  //audBackground.removeEventListener("timeupdate",loop,false);  
   gameIsRunning = false;
   startFlag = true;
   paused = false;
@@ -373,11 +429,13 @@ function gameEnd(){
     ctx.translate(-translate,0);
     translate = 0;
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.font = 36*scaledWidth+"px Shojumaru-Regular";    
+    ctx.font = 20*scaledWidth+"px Shojumaru-Regular";    
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 2*scaledWidth;
-    ctx.fillText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,170*scaledHeight);
-    ctx.strokeText("SCORE: "+score,(70-String(score).length*15)*scaledWidth,170*scaledHeight);
+    ctx.lineWidth = 1.5*scaledWidth;
+    ctx.fillText("SCORE: "+score,(90)*scaledWidth,155*scaledHeight);
+    ctx.strokeText("SCORE: "+score,(90)*scaledWidth,155*scaledHeight);
+    ctx.fillText((score==highscore?"NEW ":"")+"HIGHSCORE"+(score==highscore?"":": "+highscore),((score==highscore?50:30))*scaledWidth,190*scaledHeight);
+    ctx.strokeText((score==highscore?"NEW ":"")+"HIGHSCORE"+(score==highscore?"":": "+highscore),((score==highscore?50:30))*scaledWidth,190*scaledHeight);
  /*   [].forEach.call(lastFrame.data,function(e,i){
       if(i%4==0){
         if(lastFrame.data[i]==0&&lastFrame.data[i+1]==0&&lastFrame.data[i+2]==0){
